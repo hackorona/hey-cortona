@@ -9,7 +9,7 @@ class User:
     name: str = None
 
     def get_number(self) -> str:
-        return f"whatsapp:+{self.number}"
+        return f"whatsapp:{self.number}"
 
     @classmethod
     def from_raw(cls, raw_text: str):
