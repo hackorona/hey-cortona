@@ -19,6 +19,10 @@ def register_user():
     # TODO register users to database
     pass
 
+@app.route('/bot/regiser_user', methods=['GET'])
+def choose_task():
+    # TODO register users to database
+    pass
 
 @app.route('/bot/ask', methods=['POST'])
 def ask():
