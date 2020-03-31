@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask
+from flask import Flask, request
 
 from bot_interface.outbound_communication import OutboundSender, User
 
@@ -17,12 +17,7 @@ ben: User = User("+972543533078", "Doron Kabilio")
 @app.route('/bot/regiser_user', methods=['POST'])
 def register_user():
     # TODO register users to database
-    pass
-
-@app.route('/bot/regiser_user', methods=['GET'])
-def choose_task():
-    # TODO register users to database
-    pass
+    print(f"register {request}")
 
 @app.route('/bot/ask', methods=['POST'])
 def ask():
