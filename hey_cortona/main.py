@@ -1,4 +1,4 @@
-from hey_cortona.bot_interface import api
+from bot_interface import api
 
 
 def main():
