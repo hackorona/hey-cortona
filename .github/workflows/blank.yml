@@ -1,7 +1,9 @@
 name: scp files
-on: [push]
+on:
+  push:
+    branches: 
+      - master
 jobs:
-
   deploy:
     name: Copy folder content recursively to remote
     runs-on: ubuntu-latest
