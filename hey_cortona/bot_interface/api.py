@@ -2,7 +2,7 @@ import os
 
 from flask import Flask
 
-from hey_cortona.bot_interface.outbound_communication import OutboundSender, User
+from bot_interface.outbound_communication import OutboundSender, User
 
 app = Flask(__name__)
 
