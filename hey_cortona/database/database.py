@@ -1,31 +1,43 @@
-import pymongo
+from typing import List, Dict
+
 from pymongo import MongoClient
 
-class Database:
-    
-    def __init__(self):
-        #remember to add the server ip to the ip whitelist in the mongoDB
-        self.cluster = MongoClient("mongodb+srv://heyCortona:Hc123456@heycortona-1woqm.mongodb.net/test?retryWrites=true&w=majority")
-        self.db = self.cluster["heyCortona"]
-        self.users = self.db["users"]
-        
-    def addUser(self,phone_number,name,city):
-        post = {"phone_number": phone_number, "name": name, "city": city}
-        self.users.insert_one(post)
+from bot_interaction.user import User
 
-    def findUser(self,phone_number):
-        result = self.users.find_one({"phone_number":phone_number})
+
+class Database:
+
+    def __init__(self, uri: str):
+        # remember to add the server ip to the ip whitelist in the mongoDB
+        self._uri: str = uri
+        self.cluster = MongoClient(self._uri)
+        self.db = self.cluster["heyCortona"]
+        self.users_collection = self.db["users"]
+
+    def addUser(self, user: User):
+        post = {"phone_number": user.phone_number, "name": user.name, "city": user.city}
+        self.users_collection.insert_one(post)
+
+    def findUser(self, user: User):
+        result = self.users_collection.find_one({"phone_number": user.get_number()})
+
+        if result is not None:
+            return User.from_mongo(result)
+
         return result
 
     def getAllUsers(self):
-        myUsers = []
-        users = self.users.find({})
-        for user in users:
-            myUsers.append(user)
-        return myUsers            
 
-    def deleteUser(self, phone_number):
-        self.users.delete_one({"phone_number":phone_number})
+        users: List[User] = []
+        mongo_users: List[Dict] = self.users_collection.find({})
+
+        for user in mongo_users:
+            users.append(User.from_mongo(user))
+
+        return users
+
+    def deleteUser(self, user: User):
+        self.users_collection.delete_one({"phone_number": user.get_number()})
 
     def deleteAllUsers(self):
-        self.users.delete_many({})
+        self.users_collection.delete_many({})
