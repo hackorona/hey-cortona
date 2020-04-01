@@ -26,5 +26,5 @@ jobs:
       SSHPASS: ${{ secrets.PASSWORD }}
     steps:
       - run: |
-          sshpass -p ${{ secrets.PASSWORD }} ssh ${{ secrets.USERNAME }}@${{ secrets.HOST }} "sudo -E python3.8 ${{ secrets.PROGRAM_PATH }}/hey_cortona/main.py"
+          sshpass -p ${{ secrets.PASSWORD }} ssh ${{ secrets.USERNAME }}@${{ secrets.HOST }} "sudo -E python3.8 ${{ secrets.PROGRAM_PATH }}/hey_cortona/main.py" || true
     
