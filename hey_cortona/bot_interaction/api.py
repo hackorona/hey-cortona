@@ -40,7 +40,6 @@ def register_user_completed():
     new_user = User.from_user_id(number, name, city)
     database.addUser(new_user)
 
-    print(f"register completed:\n\n\n{new_user}\n\n\n")
     response: Dict = {"actions": [{"say": "נרשמת בהצלחה. שאל אותי כל שאלה (:"}]}
     return jsonify(response)
 
