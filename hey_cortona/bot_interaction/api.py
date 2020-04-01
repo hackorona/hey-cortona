@@ -23,7 +23,7 @@ users: List[User] = []
 @app.route('/bot/registerUser', methods=['POST'])
 def register_user():
     user_id = request.get_json().get("user_id")
-    user: User = User.from_phone_number(user_id)
+    user: User = User.from_user_id(user_id)
 
     db_user: User = database.findUser(user)
 
@@ -32,9 +32,12 @@ def register_user():
 
 @app.route('/bot/registerUserCompleted', methods=['POST'])
 def register_user_completed():
+    memory: Dict = json.loads(request.values.get("Memory"))
+    answers: Dict = memory.get("twilio").get("collected_data").get("register").get("answers")
+    city: str = answers.get("city").get("answer")
+    name: str = answers.get("name").get("answer")
     number = request.values.get("UserIdentifier")
-    new_user = User.from_phone_number(number)
-
+    new_user = User.from_user_id(number, name, city)
     database.addUser(new_user)
 
     print(f"register completed:\n\n\n{new_user}\n\n\n")

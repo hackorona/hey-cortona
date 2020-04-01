@@ -12,7 +12,7 @@ class User:
         return f"whatsapp:{self.phone_number}"
 
     @classmethod
-    def from_phone_number(cls, raw_text: str):
+    def from_user_id(cls, raw_text: str, name: str = None, city: str = None):
         raw_text = raw_text.replace("whatsapp:", "")
         return cls(raw_text)
 
