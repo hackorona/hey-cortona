@@ -8,7 +8,7 @@ class User:
     name: str = None
     city: str = None
 
-    def get_number(self) -> str:
+    def get_user_id(self) -> str:
         return f"whatsapp:{self.phone_number}"
 
     @classmethod
