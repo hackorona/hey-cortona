@@ -15,23 +15,18 @@ jobs:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
         password: ${{ secrets.PASSWORD }}
-        source: "hey_cortona/"
-        target: "~/bot"
+        source: "requirements.txt, hey_cortona/"
+        target: ${{ secrets.PROGRAM_PATH }}
 
   run-bot:
     name: Run bot
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: deploy-bot
     steps:
-      - uses: actions/checkout@master
-      - name: copy file via ssh password
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
-          script: |
-            sudo -E python3.8 "~/bot/hey_cortona/main.py"
-            echo "running main.py"
-    
+      - run: |
+          
+          apt-get install sshpass
+          sshpass -e ssh ${{ secrets.USERNAME }}@${{ secrets.HOST }} \
+          "python3.8 -m pip install -r ${{ secrets.PROGRAM_PATH }}/requirements.txt \
+          && sudo -E python3.8 ${{ secrets.PROGRAM_PATH }}/hey_cortona/main.py"
     
