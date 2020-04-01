@@ -4,7 +4,7 @@ from typing import Dict, List
 
 from flask import Flask, request, jsonify
 
-from bot_interface.outbound_communication import OutboundSender, User
+from bot_interaction.outbound_communication import OutboundSender, User
 
 app = Flask(__name__)
 
