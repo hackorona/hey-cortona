@@ -16,7 +16,7 @@ bot: User = User("+14155238886", "CORONA_BOT")
 
 @app.route('/bot/registerUser', methods=['POST'])
 def register_user():
-    user_id: str = request.get_json()["user_id"]
+    user_id: str = request.get_json().get("user_id")
     user: User = User.from_raw(user_id)
 
     sender.send(bot, user, "Gotcha, you naughty user trying to register!")
