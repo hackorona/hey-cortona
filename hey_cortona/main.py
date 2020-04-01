@@ -1,4 +1,4 @@
-from bot_interface import api
+from bot_interaction import api
 
 
 def main():
