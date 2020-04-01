@@ -24,7 +24,7 @@ jobs:
     needs: deploy-bot
     steps:
       - run: |
-          apt-get install sshpass
+          sudo apt-get install sshpass
           sshpass -e ssh ${{ secrets.USERNAME }}@${{ secrets.HOST }} \
           "python3.8 -m pip install -r ${{ secrets.PROGRAM_PATH }}/requirements.txt \
           && sudo -E python3.8 ${{ secrets.PROGRAM_PATH }}/hey_cortona/main.py"
