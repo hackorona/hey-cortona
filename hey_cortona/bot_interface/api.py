@@ -1,3 +1,4 @@
+import json
 import os
 from typing import Dict, List
 
@@ -18,9 +19,9 @@ users: List[User] = []
 
 @app.route('/bot/registerUser', methods=['POST'])
 def register_user():
-    user_id: str = request.get_json().get("user_id")
+    global users
+    user_id = request.get_json().get("user_id")
     user: User = User.from_raw(user_id)
-
     sender.send(bot, user, "Gotcha, you naughty user trying to register!")
 
     # TODO add database check
@@ -29,18 +30,15 @@ def register_user():
         if u.number == user.number:
             exists = True
             break
-    response: Dict[str, bool] = {"exists": exists}
-    return jsonify(response)
+    resp: Dict[str, bool] = {"exists": exists}
+    return json.dumps(resp)
 
 @app.route('/bot/registerUserCompleted', methods=['POST'])
 def register_user_completed():
-    questions = request.values.get("collected_data").get("register").get("answers")
-    number = request.values.get("From")
-    name = questions.get("name").get("answer")
-    city = questions.get("city").get("answer")
-    new_user = User(number, name, city)
+    number = request.values.get("UserIdentifier")
+    new_user = User.from_raw(number)
     users.append(new_user)
-
+    print(users)
     print(f"register completed:\n\n\n{new_user}\n\n\n")
     response: Dict = {"actions": [{"say": "נרשמת בהצלחה. שאל אותי כל שאלה (:"}]}
     return jsonify(response)
