@@ -14,7 +14,7 @@ class User:
     @classmethod
     def from_user_id(cls, raw_text: str, name: str = None, city: str = None):
         raw_text = raw_text.replace("whatsapp:", "")
-        return cls(raw_text)
+        return cls(raw_text, name, city)
 
     @classmethod
     def from_mongo(cls, mongo_user: Dict):
