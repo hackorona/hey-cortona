@@ -1,4 +1,4 @@
-name: scp files
+name: CI
 on:
   push:
     branches: 
@@ -26,7 +26,6 @@ jobs:
       SSHPASS: ${{ secrets.PASSWORD }}
     steps:
       - run: |
-          sudo apt-get install sshpass
           sshpass -e ssh ${{ secrets.USERNAME }}@${{ secrets.HOST }} \
           "python3.8 -m pip install -r ${{ secrets.PROGRAM_PATH }}/requirements.txt \
           && sudo -E python3.8 ${{ secrets.PROGRAM_PATH }}/hey_cortona/main.py"
