@@ -1,5 +1,5 @@
 import os
-from typing import Dict
+from typing import Dict, List
 
 from flask import Flask, request, jsonify
 
@@ -14,6 +14,8 @@ sender: OutboundSender = OutboundSender(ACCOUNT_SID, AUTH_TOKEN)
 
 bot: User = User("+14155238886", "CORONA_BOT")
 
+users: List[User] = []
+
 @app.route('/bot/registerUser', methods=['POST'])
 def register_user():
     user_id: str = request.get_json().get("user_id")
@@ -22,13 +24,25 @@ def register_user():
     sender.send(bot, user, "Gotcha, you naughty user trying to register!")
 
     # TODO add database check
-    response: Dict[str, bool] = {"exists": True}
+    exists: bool = False
+    for u in users:
+        if u.number == user.number:
+            exists = True
+            break
+    response: Dict[str, bool] = {"exists": exists}
     return jsonify(response)
 
 @app.route('/bot/registerUserCompleted', methods=['POST'])
 def register_user_completed():
-    print(f"register completed:\n\n\n{request.get_json}\n\n\n")
-    response: Dict = {"actions": [{"say": "Registered successfully"}]}
+    questions = request.values.get("collected_data").get("register").get("answers")
+    number = request.values.get("From")
+    name = questions.get("name").get("answer")
+    city = questions.get("city").get("answer")
+    new_user = User(number, name, city)
+    users.append(new_user)
+
+    print(f"register completed:\n\n\n{new_user}\n\n\n")
+    response: Dict = {"actions": [{"say": "נרשמת בהצלחה. שאל אותי כל שאלה (:"}]}
     return jsonify(response)
 
 
