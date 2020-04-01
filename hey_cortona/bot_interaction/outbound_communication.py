@@ -14,6 +14,6 @@ class OutboundSender:
     def send(self, sender: User, recipient: User, message: str):
         self._client.messages.create(
             body=message,
-            from_=sender.get_number(),
-            to=recipient.get_number()
+            from_=sender.get_user_id(),
+            to=recipient.get_user_id()
         )

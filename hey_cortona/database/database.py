@@ -13,13 +13,14 @@ class Database:
         self.cluster = MongoClient(self._uri)
         self.db = self.cluster["heyCortona"]
         self.users_collection = self.db["users"]
+        print("connected to server")
 
     def addUser(self, user: User):
         post = {"phone_number": user.phone_number, "name": user.name, "city": user.city}
         self.users_collection.insert_one(post)
 
     def findUser(self, user: User):
-        result = self.users_collection.find_one({"phone_number": user.get_number()})
+        result = self.users_collection.find_one({"phone_number": user.phone_number})
 
         if result is not None:
             return User.from_mongo(result)
@@ -37,7 +38,7 @@ class Database:
         return users
 
     def deleteUser(self, user: User):
-        self.users_collection.delete_one({"phone_number": user.get_number()})
+        self.users_collection.delete_one({"phone_number": user.phone_number})
 
     def deleteAllUsers(self):
         self.users_collection.delete_many({})
