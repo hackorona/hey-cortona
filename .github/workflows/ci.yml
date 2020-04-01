@@ -27,6 +27,5 @@ jobs:
     steps:
       - run: |
           sshpass -e ssh ${{ secrets.USERNAME }}@${{ secrets.HOST }} \
-          "python3.8 -m pip install -r ${{ secrets.PROGRAM_PATH }}/requirements.txt \
-          && sudo -E python3.8 ${{ secrets.PROGRAM_PATH }}/hey_cortona/main.py"
+          "sudo -E python3.8 ${{ secrets.PROGRAM_PATH }}/hey_cortona/main.py"
     
