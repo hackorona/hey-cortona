@@ -11,4 +11,4 @@ class User:
     @classmethod
     def from_raw(cls, raw_text: str):
         raw_text = raw_text.replace("whatsapp:", "")
-        cls(raw_text)
+        return cls(raw_text)
