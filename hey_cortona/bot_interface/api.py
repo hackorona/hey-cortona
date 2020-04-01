@@ -25,6 +25,12 @@ def register_user():
     response: Dict[str, bool] = {"exists": True}
     return jsonify(response)
 
+@app.route('/bot/registerUserCompleted', methods=['POST'])
+def register_user_completed():
+    print(f"register completed:\n\n\n{request.get_json}\n\n\n")
+    response: Dict = {"actions": [{"say": "Registered successfully"}]}
+    return jsonify(response)
+
 
 def start_server():
     app.run(host="0.0.0.0", port=80)
