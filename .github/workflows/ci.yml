@@ -31,7 +31,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           script: |
-            sudo -E python3.8 "~/bot/hey-cortona/main.py"
+            sudo -E python3.8 "~/bot/hey_cortona/main.py"
             echo "running main.py"
     
     
