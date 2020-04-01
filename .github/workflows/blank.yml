@@ -18,5 +18,5 @@ jobs:
         source: "hey_cortona/"
         target: "~/bot"
         script: |
-          sudo -E python3.8 "~/bot/hey-cortona/main.py
+          sudo -E python3.8 "~/bot/hey-cortona/main.py"
           echo "running main.py"
