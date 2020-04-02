@@ -23,6 +23,9 @@ class QNASubsystem:
 
         users = [user for user in users if "כן" in user.help_us]
 
+        if asking_user in users:
+            users.remove(asking_user)
+
         selected_users: List[User] = []
         for i in range(self._number_of_users_to_ask):
             user = random.choice(users)
