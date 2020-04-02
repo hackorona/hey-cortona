@@ -17,3 +17,13 @@ class OutboundSender:
             from_=sender.get_user_id(),
             to=recipient.get_user_id()
         )
+
+class BotSender(OutboundSender):
+
+    def __init__(self, account_sid: str, auth_token: str, bot: User):
+        super().__init__(account_sid, auth_token)
+        self._bot: User = bot;
+
+    def send_from_bot(self, recipient: User, message: str):
+        super().send(self._bot, recipient, message)
+

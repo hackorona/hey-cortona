@@ -4,9 +4,10 @@ from typing import Dict, List
 
 from flask import Flask, request, jsonify
 
-from bot_interaction.outbound_communication import OutboundSender, User
+from bot_interaction.outbound_communication import OutboundSender, User, BotSender
 from database.database import Database
-from immediate.immediate import ImmediateSender
+from database.user_database import UserDatabase
+from immediate.immediate import ImmediateSubsystem
 
 app = Flask(__name__)
 
@@ -14,11 +15,13 @@ ACCOUNT_SID = os.getenv('TWILIO_ACCOUNT_SID')
 AUTH_TOKEN = os.getenv('TWILIO_AUTH_TOKEN')
 MONGO_URI = os.getenv('MONGO_URI')
 
-sender: OutboundSender = OutboundSender(ACCOUNT_SID, AUTH_TOKEN)
-database: Database = Database(MONGO_URI)
-immediateSender: ImmediateSender = ImmediateSender(database, sender)
-
 bot: User = User("+14155238886", "CORONA_BOT")
+
+sender: BotSender =  BotSender(ACCOUNT_SID, AUTH_TOKEN, bot)
+database: UserDatabase = UserDatabase(MONGO_URI)
+immediateSender: ImmediateSubsystem = ImmediateSubsystem(database, sender)
+
+
 
 users: List[User] = []
 
@@ -54,6 +57,8 @@ def send_immediate_message():
     sender_user: User = database.findUser(user)
     if sender_user.admin:
         immediateSender.broadcast(bot, message)
+
+
 
 
 def start_server():
