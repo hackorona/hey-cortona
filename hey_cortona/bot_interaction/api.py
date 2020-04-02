@@ -5,8 +5,7 @@ from typing import Dict, List
 from flask import Flask, request, jsonify
 
 from bot_interaction.outbound_communication import OutboundSender, User, BotSender
-from users_database.database import Database
-from users_database.user_database import UserDatabase
+from database.user_database import UserDatabase
 from immediate.immediate import ImmediateSubsystem
 from model.question import Question
 from qna.qna_subsystem import QNASubsystem
