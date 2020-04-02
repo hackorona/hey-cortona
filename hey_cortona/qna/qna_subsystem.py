@@ -16,7 +16,7 @@ class QNASubsystem:
 
     def ask_question(self, asking_user: User, question: Question):
 
-        msg: str = asking_user.name + "שאל:\n"
+        msg: str = asking_user.name + " " + "שאל:\n"
         msg += question.question
 
         users: List[User] = [User.from_mongo(user) for user in self._database.get_all_elements()]
@@ -25,7 +25,9 @@ class QNASubsystem:
 
         selected_users: List[User] = []
         for i in range(self._number_of_users_to_ask):
-            selected_users.append(random.choice(users))
+            user = random.choice(users)
+            selected_users.append(user)
+            users.remove(user)
 
         for user in selected_users:
             self._outbound_sender.send_from_bot(user, msg)
