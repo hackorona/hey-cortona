@@ -6,6 +6,7 @@ from flask import Flask, request, jsonify
 
 from bot_interaction.outbound_communication import OutboundSender, User
 from database.database import Database
+from immediate.immediate import ImmediateSender
 
 app = Flask(__name__)
 
@@ -15,6 +16,7 @@ MONGO_URI = os.getenv('MONGO_URI')
 
 sender: OutboundSender = OutboundSender(ACCOUNT_SID, AUTH_TOKEN)
 database: Database = Database(MONGO_URI)
+immediateSender: ImmediateSender = ImmediateSender(database, sender)
 
 bot: User = User("+14155238886", "CORONA_BOT")
 
@@ -43,6 +45,14 @@ def register_user_completed():
     response: Dict = {"actions": [{"say": "נרשמת בהצלחה. שאל אותי כל שאלה (:"}]}
     return jsonify(response)
 
+@app.route('/bot/immediateMessage', methods=['POST'])
+def send_immediate_message():
+    message: str = request.values.get("CurrentInput")
+    senderPhone = request.values.get("UserIdentifier")
+    user: User = User.from_user_id(senderPhone)
+    senderUser = database.findUser(user)
+    if senderUser.admin:
+        immediateSender.broadcast(bot, message)
 
 def start_server():
     app.run(host="0.0.0.0", port=80)
