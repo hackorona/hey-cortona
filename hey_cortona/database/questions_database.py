@@ -1,6 +1,7 @@
 from database.database import Database
 from model.question import Question
 from model.questions import Questions
+from model.user import User
 
 
 class QuestionsDatabase(Database):
@@ -9,7 +10,7 @@ class QuestionsDatabase(Database):
         super().__init__(uri, "questions")
 
     def addQuestion(self, question: Question):
-        self._collection.insert_one(post)
+
         result = self._collection.find_one({"qid": question.qid})
         if result is not None:
             result = Questions.from_mongo(result)
@@ -17,13 +18,13 @@ class QuestionsDatabase(Database):
             self._collection.replace_one({"qid":question.qid},result.questions)
             return result
 
-    def findQuestions(self, question: Question):
-        result = self._collection.find_one({"qid": user.qid})
+    def findQuestion(self, question: Question):
+        result = self._collection.find_one({"qid": question.qid})
 
         if result is not None:
             return User.from_mongo(result)
 
         return result
 
-    def deleteQuestions(self, questions: Questions):
+    def deleteQuestion(self, questions: Questions):
         self._collection.delete_one({"qid": questions.qid})
