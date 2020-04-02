@@ -3,6 +3,7 @@ on:
   push:
     branches: 
       - master
+      - develop
 jobs:
   deploy-bot:
     name: deploy bot to server
