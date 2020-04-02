@@ -63,6 +63,7 @@ def send_immediate_message():
 def ask_qna():
     user_id = request.values.get("UserIdentifier")
     user: User = User.from_user_id(user_id)
+    user: User = users_database.findUser(user)
     message: str = request.values.get("CurrentInput")
     question: Question = Question(message)
     qna_subsystem.ask_question(user, question)
