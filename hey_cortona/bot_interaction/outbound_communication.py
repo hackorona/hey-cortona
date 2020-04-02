@@ -1,6 +1,6 @@
 from twilio.rest import Client
 
-from bot_interaction.user import User
+from model.user import User
 
 
 class OutboundSender:

@@ -1,5 +1,5 @@
 from bot_interaction.outbound_communication import OutboundSender;
-from bot_interaction.user import User
+from model.user import User
 from database.database import Database
 
 
