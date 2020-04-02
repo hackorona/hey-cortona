@@ -16,7 +16,7 @@ class Database:
         print("connected to server")
 
     def addUser(self, user: User):
-        post = {"phone_number": user.phone_number, "name": user.name, "city": user.city, "help_us": user.help_us}
+        post = {"phone_number": user.phone_number, "name": user.name, "city": user.city, "help_us": user.help_us, "admin": user.admin}
         self.users_collection.insert_one(post)
 
     def findUser(self, user: User):
