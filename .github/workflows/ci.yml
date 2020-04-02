@@ -1,0 +1,30 @@
+name: CI
+on:
+  push:
+    branches: 
+      - master
+jobs:
+  deploy-bot:
+    name: deploy bot to server
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: copy file via ssh password
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        password: ${{ secrets.PASSWORD }}
+        source: "requirements.txt, hey_cortona/"
+        target: ${{ secrets.PROGRAM_PATH }}
+
+  run-bot:
+    name: Run bot
+    runs-on: ubuntu-latest
+    needs: deploy-bot
+    env:
+      SSHPASS: ${{ secrets.PASSWORD }}
+    steps:
+      - run: |
+          sshpass -p ${{ secrets.PASSWORD }} ssh ${{ secrets.USERNAME }}@${{ secrets.HOST }} "sudo -E python3.8 ${{ secrets.PROGRAM_PATH }}/hey_cortona/main.py" || true
+    

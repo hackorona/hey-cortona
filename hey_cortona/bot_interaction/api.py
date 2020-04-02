@@ -38,8 +38,9 @@ def register_user_completed():
     answers: Dict = memory.get("twilio").get("collected_data").get("register").get("answers")
     city: str = answers.get("city").get("answer")
     name: str = answers.get("name").get("answer")
+    help_us: str = answers.get("help_us").get("answer")
     number = request.values.get("UserIdentifier")
-    new_user = User.from_user_id(number, name, city)
+    new_user = User.from_user_id(number, name, city, help_us)
     database.addUser(new_user)
 
     response: Dict = {"actions": [{"say": "נרשמת בהצלחה. שאל אותי כל שאלה (:"}]}
@@ -53,6 +54,7 @@ def send_immediate_message():
     senderUser = database.findUser(user)
     if senderUser.admin:
         immediateSender.broadcast(bot, message)
+
 
 def start_server():
     app.run(host="0.0.0.0", port=80)
