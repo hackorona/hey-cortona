@@ -19,8 +19,9 @@ class QNASubsystem:
         msg: str = asking_user.name + "שאל:\n"
         msg += question.question
 
-        users: List[User] = [User.from_mongo(user) for user in self._database.get_all_elements() if
-                             "כן" in user.help_us]
+        users: List[User] = [User.from_mongo(user) for user in self._database.get_all_elements()]
+
+        users = [user for user in users if "כן" in user]
 
         selected_users: List[User] = []
         for i in range(self._number_of_users_to_ask):
