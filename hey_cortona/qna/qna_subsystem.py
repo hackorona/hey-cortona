@@ -7,7 +7,7 @@ from model.question import Question
 from model.user import User
 
 
-class QNASubsytem:
+class QNASubsystem:
 
     def __init__(self, database: QuestionsDatabase, outbound_sender: BotSender, number_of_users_to_ask: int):
         self._database: QuestionsDatabase = database

@@ -4,8 +4,8 @@ from typing import Dict
 
 @dataclass
 class Question:
-    qid: str
     question: str
+    qid: str = None
 
     def get_question_id(self) -> str:
         return self.qid
