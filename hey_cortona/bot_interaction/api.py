@@ -61,7 +61,7 @@ def send_immediate_message():
 
 @app.route('/bot/qna', methods=['POST'])
 def ask_qna():
-    user_id = request.values.get("user_id")
+    user_id = request.values.get("UserIdentifier")
     user: User = User.from_user_id(user_id)
     message: str = request.values.get("CurrentInput")
     question: Question = Question(message)
