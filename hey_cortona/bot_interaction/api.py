@@ -48,11 +48,11 @@ def register_user_completed():
 
 @app.route('/bot/immediateMessage', methods=['POST'])
 def send_immediate_message():
-    message: str = request.values.get("CurrentInput")
-    senderPhone = request.values.get("UserIdentifier")
-    user: User = User.from_user_id(senderPhone)
-    senderUser = database.findUser(user)
-    if senderUser.admin:
+    message: str = request.get_json().get("CurrentInput")
+    sender_phone_number: str = request.get_json().get("UserIdentifier")
+    user: User = User.from_user_id(sender_phone_number)
+    sender_user: User = database.findUser(user)
+    if sender_user.admin:
         immediateSender.broadcast(bot, message)
 
 
