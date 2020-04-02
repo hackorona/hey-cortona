@@ -41,11 +41,11 @@ def register_user_completed():
     new_user = User.from_user_id(number, name, city, help_us)
     database.addUser(new_user)
 
-    # response: Dict = {"actions": [{"say": "נרשמת בהצלחה. שאל אותי כל שאלה (:"}]}
-    # return jsonify(response)
+    response: Dict = {"actions": [{"say": "נרשמת בהצלחה. שאל אותי כל שאלה (:"}]}
+    return jsonify(response)
 
-    resp: Dict[str, bool] = {"sign_up": True}
-    return json.dumps(resp)
+    #resp: Dict[str, bool] = {"sign_up": True}
+    #return json.dumps(resp)
 
 
 
