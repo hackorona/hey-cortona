@@ -13,13 +13,8 @@ class Database:
         self._collection = self._db[collection_name]
 
     def get_all_elements(self):
-        users: List[User] = []
-        mongo_users: List[Dict] = self._collection.find({})
-
-        for user in mongo_users:
-            users.append(User.from_mongo(user))
-
-        return users
+        mongo_elements: List[Dict] = self._collection.find({})
+        return mongo_elements
 
     def delete_all_elements(self):
         self._collection.delete_many({})
