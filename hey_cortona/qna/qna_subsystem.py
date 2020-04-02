@@ -27,7 +27,7 @@ class QNASubsystem:
             users.remove(asking_user)
 
         selected_users: List[User] = []
-        for i in range(self._number_of_users_to_ask):
+        for i in range(min(self._number_of_users_to_ask, len(users))):
             user = random.choice(users)
             selected_users.append(user)
             users.remove(user)
