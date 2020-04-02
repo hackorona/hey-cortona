@@ -20,7 +20,7 @@ class QNASubsystem:
         msg += question.question
 
         users: List[User] = [User.from_mongo(user) for user in self._database.get_all_elements() if
-                             "בן" in user.help_us]
+                             "כן" in user.help_us]
 
         selected_users: List[User] = []
         for i in range(self._number_of_users_to_ask):
