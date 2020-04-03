@@ -9,14 +9,25 @@ class QuestionsDatabase(Database):
     def __init__(self, uri: str):
         super().__init__(uri, "questions")
 
-    def add_question(self, question: Question):
-        result = self._collection.find_one({"qid": question.qid})
-        print (f'\n\nresult : {result} , qid : {question.qid} , origin_que : {question}\n\n')
+    # def add_question(self, question: Question):
+    #     result = self._collection.find_one({"qid": question.qid})
+    #     print (f'\n\nresult : {result} , qid : {question.qid} , origin_que : {question}\n\n')
+    #     if result is not None:
+    #         result = Questions.from_mongo(result)
+    #         print (f'\n\nque from mongo : {result}\n\n')
+    #         result.questions.append(question.question)
+    #         self._collection.replace_one({"qid": question.qid}, result.questions)
+    #
+    #     return result
+
+    def add_question(self, question: str, qid: str):
+        result = self._collection.find_one({"qid": qid})
+        print (f'\n\nresult : {result} , qid : {qid} , origin_que : {question}\n\n')
         if result is not None:
             result = Questions.from_mongo(result)
             print (f'\n\nque from mongo : {result}\n\n')
-            result.questions.append(question.question)
-            self._collection.replace_one({"qid": question.qid}, result.questions)
+            result.questions.append(question)
+            self._collection.replace_one({"qid": qid}, result.questions)
 
         return result
 
