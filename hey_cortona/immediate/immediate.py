@@ -9,7 +9,7 @@ class ImmediateSubsystem:
         self._outbound_sender: BotSender = outbound_sender
 
     def broadcast(self, sender: User, message: str):
-        for recipient in self._database.get_all_elements():
+        for recipient in self._database.get_all_users():
             self._outbound_sender.send(sender, recipient, self.message_formatter(message))
 
     def message_formatter(self, message: str):

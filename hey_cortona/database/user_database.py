@@ -20,7 +20,7 @@ class UserDatabase(Database):
         return result
 
     def get_all_users(self):
-        users = super().get_all_users().collection.find({})
+        users = super().get_all_elements()
         users_arr = []
         for user in users:
             users_arr.append(User.from_mongo(user))
