@@ -22,6 +22,7 @@ sender: BotSender = BotSender(ACCOUNT_SID, AUTH_TOKEN, bot)
 users_database: UserDatabase = UserDatabase(MONGO_URI)
 immediate_subsystem: ImmediateSubsystem = ImmediateSubsystem(users_database, sender)
 qna_subsystem: QNASubsystem = QNASubsystem(users_database, sender, 3)
+qna_subsystem.start()
 
 users: List[User] = []
 
