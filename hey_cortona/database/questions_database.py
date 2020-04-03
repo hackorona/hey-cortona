@@ -48,8 +48,8 @@ class QuestionsDatabase(Database):
         return questions_arr
 
     def add_questions(self, question: str):
-        result = Questions.from_mongo({"qid": question, "questions": [question], "answers": {}})
-        self._collection.insert_one(result)
+        result = Questions(question, [question], {})
+        self._collection.insert_one(result.to_mongo())
 
     def delete_question(self, questions: Questions):
         self._collection.delete_one({"qid": questions.qid})

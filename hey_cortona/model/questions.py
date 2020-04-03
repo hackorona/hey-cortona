@@ -7,7 +7,7 @@ from model.question import Question
 @dataclass
 class Questions:
     qid: str
-    questions: List[Question]
+    questions: List[str]
     answers: Dict[str, float]
 
     @classmethod
