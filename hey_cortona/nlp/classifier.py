@@ -17,7 +17,7 @@ class Classifier:
     def _fuzzy_check(self, sentence, qid):
         sum = 0
         amount = 0
-        for sent in self.train_data:
+        for sent in self.train_tuples_array():
             if sent[1] == qid:
                 sum += fuzz.partial_ratio(sentence, sent[0])
                 amount += 1
