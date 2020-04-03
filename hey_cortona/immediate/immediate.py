@@ -10,6 +10,7 @@ class ImmediateSubsystem:
 
     def broadcast(self, sender: User, message: str):
         for recipient in self._database.get_all_elements():
+            print("Was sent to recipient")
             self._outbound_sender.send(sender, User.from_mongo(recipient), message)
 
     def message_formatter(self, message: str):
