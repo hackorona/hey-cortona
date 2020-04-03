@@ -42,7 +42,8 @@ class Classifier:
         train_tuples = []
         for questions in self.train_data:
             for question in questions.questions:
-                train_tuples.append((question.question,question.qid))
+                print(f'que : {question}')
+                train_tuples.append((question,questions.qid))
         return train_tuples        
 
     def train(self):
