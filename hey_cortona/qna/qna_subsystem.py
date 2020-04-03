@@ -3,25 +3,25 @@ from typing import List
 
 from bot_interaction.outbound_communication import BotSender
 from database.questions_database import QuestionsDatabase
+from database.user_database import UserDatabase
 from model.question import Question
 from model.user import User
 
 
 class QNASubsystem:
 
-    def __init__(self, database: QuestionsDatabase, outbound_sender: BotSender, number_of_users_to_ask: int):
-        self._database: QuestionsDatabase = database
+    def __init__(self, database: UserDatabase, outbound_sender: BotSender, number_of_users_to_ask: int):
+        self._database: UserDatabase = database
         self._outbound_sender: BotSender = outbound_sender
         self._number_of_users_to_ask = number_of_users_to_ask
 
     def ask_question(self, asking_user: User, question: Question):
 
-        msg: str = asking_user.name + " " + "שאל:\n"
-        msg += question.question
+        msg: str = f"{asking_user.name} asked:\n{question.question}"
 
         users: List[User] = [User.from_mongo(user) for user in self._database.get_all_elements()]
 
-        users = [user for user in users if "כן" in user.help_us]
+        users = [user for user in users if "yes" in user.help_us]
 
         if asking_user in users:
             users.remove(asking_user)
