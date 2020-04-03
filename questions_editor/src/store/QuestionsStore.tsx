@@ -61,12 +61,18 @@ class QuestionsStore {
     }
   }
 
+  public createNewCategory(qid: string) {
+    const newCategory: Questions = new Questions();
+    newCategory.qid = qid;
+    this.questions.push(newCategory);
+  }
+
   @action
   public moveMarked(qid: string) {
     const tempMarked: Question[] = [];
     let target = this.questions[0];
     let remove: number[] = [];
-    this.questions.forEach((items: Questions) => {
+    this.questions.forEach((items: Questions, index) => {
       remove = [];
       if (items.qid === qid) {
         target = items;
@@ -95,6 +101,13 @@ class QuestionsStore {
         return items;
       })
     );
+
+    for (let i = 0; i < this.questions.length; i++) {
+      if (this.questions[i].questions.length === 0) {
+        this.questions.splice(i, 1);
+        i--;
+      }
+    }
   }
 }
 

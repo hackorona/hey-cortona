@@ -17,10 +17,26 @@
   .cards {
     .card {
       margin: 10px;
-      min-width: 30vw;
+      width: 30vw;
+      padding: 1.5vw;
     }
     .checked {
       background-color: yellow !important;
+    }
+  }
+  .my-form {
+    align-items: center;
+    margin-top: 1.7rem;
+    margin-bottom: 1.7rem;
+    background-color: #369cf7;
+    .button {
+      font-size: 2rem;
+      background-color: #b3d6f5;
+      color: black;
+    }
+    .input {
+      font-size: 2rem;
+      max-width: 60vw;
     }
   }
 }
