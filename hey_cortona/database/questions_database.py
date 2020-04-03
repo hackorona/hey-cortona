@@ -41,7 +41,7 @@ class QuestionsDatabase(Database):
         return result
 
     def get_all_questions(self):
-        questions = self._collection.find({})
+        questions = super().get_all_elements()
         questions_arr = []
         for question in questions:
             questions_arr.append(Questions.from_mongo(question))

@@ -19,5 +19,12 @@ class UserDatabase(Database):
 
         return result
 
+    def get_all_users(self):
+        users = super().get_all_users().collection.find({})
+        users_arr = []
+        for user in users:
+            users_arr.append(User.from_mongo(user))
+        return users_arr
+
     def deleteUser(self, user: User):
         self._collection.delete_one({"phone_number": user.phone_number})
