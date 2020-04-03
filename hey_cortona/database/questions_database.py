@@ -22,7 +22,7 @@ class QuestionsDatabase(Database):
         result = self._collection.find_one({"qid": question.qid})
 
         if result is not None:
-            return User.from_mongo(result)
+            return Question.from_mongo(result)
 
         return result
 
