@@ -15,7 +15,7 @@ class QuestionsDatabase(Database):
         if result is not None:
             result = Questions.from_mongo(result)
             result.questions.append(question.question)
-            self._collection.replace_one({"qid":question.qid},result.questions)
+            self._collection.replace_one({"qid": question.qid}, result.questions)
             return result
 
     def findQuestion(self, question: Question):
