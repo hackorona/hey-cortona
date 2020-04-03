@@ -3,7 +3,6 @@ from textblob.classifiers import NaiveBayesClassifier
 from database.questions_database import QuestionsDatabase
 from model.question import Question
 from fuzzywuzzy import fuzz
-import Levenshtein
 
 
 class Classifier:
