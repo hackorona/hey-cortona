@@ -1,0 +1,26 @@
+.my-title {
+  align-items: center;
+  text-align: center;
+  background-color: #369cf7;
+  min-height: 100vh;
+  font-family: "Comic Sans MS", cursive, sans-serif;
+  .my-header {
+    padding-top: 15px !important;
+    padding-bottom: 15px !important;
+    background-color: #0e6ab9;
+    color: white;
+    max-width: 50vw;
+    position: relative;
+    left: 25vw;
+    font-weight: bolder;
+  }
+  .cards {
+    .card {
+      margin: 10px;
+      min-width: 30vw;
+    }
+    .checked {
+      background-color: yellow !important;
+    }
+  }
+}
