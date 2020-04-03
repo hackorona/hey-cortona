@@ -27,11 +27,12 @@ class QuestionsDatabase(Database):
             result = Questions.from_mongo(result)
             result.questions.append(question)
             print (f'\n\nque from mongo : {result}\n\n')
-            self._collection.replace_one({"qid": qid}, result.questions)
+            self._collection.replace_one({"qid": qid}, result.to_mongo())
 
         return result
 
     def find_question(self, question: Question):
+        #TODO fix this crap code !!!!!!!!!!!
         result = self._collection.find_one({"qid": question.qid})
 
         if result is not None:
