@@ -34,7 +34,7 @@ class Classifier:
         if similarity_percentage >= self.pass_percentage:
             self.questions_database.add_question(question.question, qid)
         else:
-            self.questions_database.add_questions(question)
+            self.questions_database.add_questions(question.question)
 
         self.train()
 
