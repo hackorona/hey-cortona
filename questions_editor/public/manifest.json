@@ -1,0 +1,6 @@
+{
+  "short_name": "Tic Tac Toe",
+  "name": "Tic Tac Toe by Dror Tal",
+  "start_url": ".",
+  "display": "standalone"
+}
