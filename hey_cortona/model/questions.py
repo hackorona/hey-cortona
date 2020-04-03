@@ -17,7 +17,7 @@ class Questions:
     def to_mongo(self):
         mongo_obj: Dict = {
             "qid": self.qid,
-            "questions": [q.question for q in self.questions],
+            "questions": self.questions,
             "answers": self.answers
         }
 
