@@ -13,4 +13,4 @@ class ImmediateSubsystem:
             self._outbound_sender.send(sender, User.from_mongo(recipient), self.message_formatter(message))
 
     def message_formatter(self, message: str):
-        return "System message" + "\n" + message[1::]
+        return "*System message:*" + "\n" + message[1::]
