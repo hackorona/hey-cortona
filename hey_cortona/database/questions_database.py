@@ -11,8 +11,10 @@ class QuestionsDatabase(Database):
 
     def add_question(self, question: Question):
         result = self._collection.find_one({"qid": question.qid})
+        print (f'\n\nresult : {result}\n\n')
         if result is not None:
             result = Questions.from_mongo(result)
+            print (f'\n\nque from mongo : {result}\n\n')
             result.questions.append(question.question)
             self._collection.replace_one({"qid": question.qid}, result.questions)
 

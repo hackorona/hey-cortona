@@ -30,7 +30,7 @@ class Classifier:
 
         similarity_percentage: float = self._fuzzy_check(question.question, qid)
 
-        print(f'\nqid: {qid}, sim_prec: {similarity_percentage}\n')
+        print(f'\nqid: {qid}, sim_prec: {similarity_percentage}, question: {question.question}\n')
         if similarity_percentage >= self.pass_percentage:
             self.questions_database.add_question(question)
         else:
@@ -42,9 +42,8 @@ class Classifier:
         train_tuples = []
         for questions in self.train_data:
             for question in questions.questions:
-                print(f'que : {question}')
                 train_tuples.append((question,questions.qid))
-        return train_tuples        
+        return train_tuples
 
     def train(self):
         self.train_data = self.questions_database.get_all_questions()
