@@ -27,7 +27,7 @@ class QuestionsDatabase(Database):
             result = Questions.from_mongo(result)
             result.questions.append(question)
             print (f'\n\nque from mongo : {result}\n\n')
-            self._collection.replace_one({"qid": qid}, result.to_mongo())
+            self._collection.update_one({"qid": qid}, result.to_mongo())
 
         return result
 
