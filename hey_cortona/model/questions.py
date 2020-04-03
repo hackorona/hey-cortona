@@ -21,6 +21,8 @@ class Questions:
             "answers": self.answers
         }
 
+        return mongo_obj
+
 
     def __str__(self):
         return f"{self.qid}:{self.questions} - answers: {self.answers}"
