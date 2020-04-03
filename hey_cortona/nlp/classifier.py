@@ -12,6 +12,7 @@ class Classifier:
         self.pass_percentage = 50
         self.questions_database = questions_database
         self.train_data = self.questions_database.get_all_questions()
+        self.train()
 
     def _fuzzy_check(self, sentence, qid):
         sum = 0
