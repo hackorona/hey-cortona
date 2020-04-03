@@ -8,6 +8,7 @@ from database.questions_database import QuestionsDatabase
 from database.user_database import UserDatabase
 from model.question import Question
 from model.user import User
+from nlp.classifier import Classifier
 
 
 class QNASubsystem:

@@ -8,6 +8,7 @@ from bot_interaction.outbound_communication import OutboundSender, User, BotSend
 from database.user_database import UserDatabase
 from immediate.immediate import ImmediateSubsystem
 from model.question import Question
+from nlp.classifier import Classifier
 from qna.qna_subsystem import QNASubsystem
 
 app = Flask(__name__)
@@ -62,11 +63,13 @@ def send_immediate_message():
 
 @app.route('/bot/qna', methods=['POST'])
 def ask_qna():
+    classifier: Classifier = Classifier()
     user_id = request.values.get("UserIdentifier")
     user: User = User.from_user_id(user_id)
     user: User = users_database.findUser(user)
     message: str = request.values.get("CurrentInput")
     question: Question = Question(message)
+    classifier.add_question(question)
     qna_subsystem.ask_question(user, question)
 
     response: Dict = {
