@@ -25,8 +25,8 @@ class QuestionsDatabase(Database):
         print (f'\n\nresult : {result} , qid : {qid} , origin_que : {question}\n\n')
         if result is not None:
             result = Questions.from_mongo(result)
-            print (f'\n\nque from mongo : {result}\n\n')
             result.questions.append(question)
+            print (f'\n\nque from mongo : {result}\n\n')
             self._collection.replace_one({"qid": qid}, result.questions)
 
         return result
