@@ -9,11 +9,9 @@ import Question from "../models/Question";
 interface IProps {
   qid: string;
 }
-
 interface IState {
   reRender: boolean;
 }
-
 @observer
 class QuestionCard extends Component<IProps, IState> {
   constructor(props: Readonly<IProps>) {
