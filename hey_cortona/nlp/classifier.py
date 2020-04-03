@@ -25,11 +25,12 @@ class Classifier:
         return sum / amount
 
     def add_question(self, question: Question):
-
-        qid: int = self._classifier.classify(question.question)
+        print("\nstart nlp\n")
+        qid: str = self._classifier.classify(question.question)
 
         similarity_percentage: float = self._fuzzy_check(question, qid)
 
+        print(f'\nqid: {qid}, sim_prec: {similarity_percentage}\n')
         if similarity_percentage >= self.pass_percentage:
             self.questions_database.add_question(question.question)
         else:

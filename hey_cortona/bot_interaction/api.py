@@ -72,6 +72,7 @@ def ask_qna():
     message: str = request.values.get("CurrentInput")
     question: Question = Question(message)
     classifier.add_question(question)
+    print("Finished nlp")
     qna_subsystem.ask_question(user, question)
 
     response: Dict = {
