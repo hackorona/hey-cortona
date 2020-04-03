@@ -23,8 +23,8 @@ users_database: UserDatabase = UserDatabase(MONGO_URI)
 immediate_subsystem: ImmediateSubsystem = ImmediateSubsystem(users_database, sender)
 qna_subsystem: QNASubsystem = QNASubsystem(users_database, sender, 3)
 
-
 users: List[User] = []
+
 
 @app.route('/bot/registerUser', methods=['POST'])
 def register_user():
@@ -36,19 +36,18 @@ def register_user():
     resp: Dict[str, bool] = {"exists": (db_user is not None)}
     return json.dumps(resp)
 
+
 @app.route('/bot/registerUserCompleted', methods=['POST'])
 def register_user_completed():
     memory: Dict = json.loads(request.values.get("Memory"))
     answers: Dict = memory.get("twilio").get("collected_data").get("register").get("answers")
-    city: str = answers.get("city").get("answer")
-    name: str = answers.get("name").get("answer")
-    help_us: str = answers.get("help_us").get("answer")
     number = request.values.get("UserIdentifier")
-    new_user = User.from_user_id(number, name, city, help_us)
+    new_user = User.from_answers(number, answers)
     users_database.addUser(new_user)
 
-    response: Dict = {"actions": [{"say": "נרשמת בהצלחה. שאל אותי כל שאלה (:"}]}
+    response: Dict = {"actions": [{"say": "You have registered successfully!"}]}
     return jsonify(response)
+
 
 @app.route('/bot/immediateMessage', methods=['POST'])
 def send_immediate_message():
@@ -59,6 +58,7 @@ def send_immediate_message():
     if sender_user.admin:
         immediate_subsystem.broadcast(bot, message)
 
+
 @app.route('/bot/qna', methods=['POST'])
 def ask_qna():
     user_id = request.values.get("UserIdentifier")
@@ -68,12 +68,9 @@ def ask_qna():
     question: Question = Question(message)
     qna_subsystem.ask_question(user, question)
 
-    response: Dict = {"actions": [{"say": "תפסת אותי לא מוכן. מיד מברר לך."}]}
+    response: Dict = {
+        "actions": [{"say": "Oops. Looks like I don't have an answer. I'll be right back with an answer."}]}
     return jsonify(response)
-
-
-
-
 
 
 def start_server():

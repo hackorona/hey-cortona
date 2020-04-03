@@ -1,16 +1,16 @@
-from bot_interaction.outbound_communication import OutboundSender;
+from bot_interaction.outbound_communication import BotSender
+from database.user_database import UserDatabase
 from model.user import User
-from database.database import Database
 
 
 class ImmediateSubsystem:
-    def __init__(self, database: Database, outbound_sender: OutboundSender):
-        self.database = database
-        self.outbound_sender = outbound_sender
+    def __init__(self, database: UserDatabase, outbound_sender: BotSender):
+        self._database: UserDatabase = database
+        self._outbound_sender: BotSender = outbound_sender
 
     def broadcast(self, sender: User, message: str):
-        for recipient in self.database.getAllUsers():
-            self.outbound_sender.send(sender, recipient, message)
+        for recipient in self._database.get_all_elements():
+            self._outbound_sender.send(sender, recipient, message)
 
     def message_formatter(self, message: str):
         return "*הודעת מערכת:*" + "\n" + message
