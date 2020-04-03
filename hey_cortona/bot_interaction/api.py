@@ -5,6 +5,7 @@ from typing import Dict, List
 from flask import Flask, request, jsonify
 
 from bot_interaction.outbound_communication import OutboundSender, User, BotSender
+from database.questions_database import QuestionsDatabase
 from database.user_database import UserDatabase
 from immediate.immediate import ImmediateSubsystem
 from model.question import Question
@@ -21,6 +22,7 @@ bot: User = User("+14155238886", "CORONA_BOT")
 
 sender: BotSender = BotSender(ACCOUNT_SID, AUTH_TOKEN, bot)
 users_database: UserDatabase = UserDatabase(MONGO_URI)
+questions_database: QuestionsDatabase = QuestionsDatabase(MONGO_URI)
 immediate_subsystem: ImmediateSubsystem = ImmediateSubsystem(users_database, sender)
 qna_subsystem: QNASubsystem = QNASubsystem(users_database, sender, 3)
 qna_subsystem.start()
@@ -63,7 +65,7 @@ def send_immediate_message():
 
 @app.route('/bot/qna', methods=['POST'])
 def ask_qna():
-    classifier: Classifier = Classifier()
+    classifier: Classifier = Classifier(questions_database)
     user_id = request.values.get("UserIdentifier")
     user: User = User.from_user_id(user_id)
     user: User = users_database.findUser(user)
