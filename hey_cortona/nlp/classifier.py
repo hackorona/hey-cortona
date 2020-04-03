@@ -38,7 +38,7 @@ class Classifier:
 
         self.train()
 
-    def train_tuples_array():
+    def train_tuples_array(self):
         return [(question.question,question.qid) for question in self.train_data]
         
 
