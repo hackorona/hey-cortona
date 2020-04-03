@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7074a8c6-4462-47d2-b395-ed8728ad2107" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/bot_interaction/outbound_communication.py" beforeDir="false" afterPath="$PROJECT_DIR$/bot_interaction/outbound_communication.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/immediate/immediate.py" beforeDir="false" afterPath="$PROJECT_DIR$/immediate/immediate.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -25,8 +24,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/immediate/immediate.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="252">
-              <caret line="12" selection-start-line="12" selection-end-line="12" />
+            <state relative-caret-position="294">
+              <caret line="14" column="30" selection-start-line="14" selection-start-column="26" selection-end-line="14" selection-end-column="30" />
               <folding>
                 <element signature="e#0#60#0" expanded="true" />
               </folding>
@@ -403,8 +402,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/immediate/immediate.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="252">
-          <caret line="12" selection-start-line="12" selection-end-line="12" />
+        <state relative-caret-position="294">
+          <caret line="14" column="30" selection-start-line="14" selection-start-column="26" selection-end-line="14" selection-end-column="30" />
           <folding>
             <element signature="e#0#60#0" expanded="true" />
           </folding>
