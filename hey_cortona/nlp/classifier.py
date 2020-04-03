@@ -28,7 +28,7 @@ class Classifier:
         print("\nstart nlp\n")
         qid: str = self._classifier.classify(question.question)
 
-        similarity_percentage: float = self._fuzzy_check(question, qid)
+        similarity_percentage: float = self._fuzzy_check(question.question, qid)
 
         print(f'\nqid: {qid}, sim_prec: {similarity_percentage}\n')
         if similarity_percentage >= self.pass_percentage:
