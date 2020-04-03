@@ -61,7 +61,7 @@ def send_immediate_message():
     sender_user: User = users_database.findUser(user)
     if sender_user.admin:
         immediate_subsystem.broadcast(bot, message)
-
+    return ""
 
 @app.route('/bot/qna', methods=['POST'])
 def ask_qna():
