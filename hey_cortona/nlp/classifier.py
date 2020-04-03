@@ -11,7 +11,7 @@ class Classifier:
         self._set: Dict[str, int] = {}
         self.pass_percentage = 50
         self.questions_database = questions_database
-        self.train_data = self.questions_database.get_all_questions()
+        self.train_data = None
         self.train()
 
     def _fuzzy_check(self, sentence, qid):
@@ -38,6 +38,10 @@ class Classifier:
 
         self.train()
 
+    def train_tuples_array():
+        return [(question.question,question.qid) for question in self.train_data]
+        
+
     def train(self):
         self.train_data = self.questions_database.get_all_questions()
-        self._classifier = NaiveBayesClassifier(self.train_data)
+        self._classifier = NaiveBayesClassifier(self.train_tuples_array())
