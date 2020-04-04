@@ -8,7 +8,7 @@ from model.question import Question
 class QuestionsCategory:
     qid: str
     questions: List[Question]
-    answers: Dict[str, float]
+    answers: List[str]
 
     @classmethod
     def from_mongo(cls, mongo_questions: Dict):
