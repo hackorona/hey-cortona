@@ -26,18 +26,22 @@ class Classifier:
 
     def add_question(self, question: Question):
         print("\nstart nlp\n")
-        qid: str = self._classifier.classify(question.question.lower())
-
-        similarity_percentage: float = self._fuzzy_check(question.question.lower(), qid)
-
-        print(f'\nqid: {qid}, sim_prec: {similarity_percentage}, question: {question.question.lower()}\n')
-        if similarity_percentage >= self.pass_percentage:
-            question.qid = qid
-            self.questions_database.add_question(question.question, question.qid)
-
-        else:
+        if len(self.questions_database.get_all_questions()) < 1:
             question.qid = question.question
             self.questions_database.add_question_category(question.qid)
+        else:
+            qid: str = self._classifier.classify(question.question.lower())
+
+            similarity_percentage: float = self._fuzzy_check(question.question.lower(), qid)
+
+            print(f'\nqid: {qid}, sim_prec: {similarity_percentage}, question: {question.question.lower()}\n')
+            if similarity_percentage >= self.pass_percentage:
+                question.qid = qid
+                self.questions_database.add_question(question.question, question.qid)
+
+            else:
+                question.qid = question.question
+                self.questions_database.add_question_category(question.qid)
 
         self.train()
 
