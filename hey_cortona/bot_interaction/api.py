@@ -25,7 +25,9 @@ class SystemContainer:
     qna_subsystem: QNASubsystem = None
 
     def __new__(cls):
-        return lambda func: func(cls.users_database, cls.questions_database, cls.immediate_subsystem, cls.qna_subsystem)
+        def decorator(func):
+            return lambda: func(cls.users_database, cls.questions_database, cls.immediate_subsystem, cls.qna_subsystem)
+        return decorator
 
 
 @app.route('/bot/checkUser', methods=['POST'])
