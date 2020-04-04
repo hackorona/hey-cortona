@@ -73,7 +73,7 @@ class QNASubsystem:
 
             users: List[User] = [User.from_mongo(user) for user in self._database.get_all_elements()]
 
-            users = [user for user in users if "yes" in user.help_us]
+            users = [user for user in users if "yes" in user.help_us.lower()]
 
             if asking_user in users:
                 users.remove(asking_user)
