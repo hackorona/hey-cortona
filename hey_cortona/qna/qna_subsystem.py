@@ -42,7 +42,9 @@ class QNASubsystem:
 
     def start(self):
         self._question_thread_active = True
+        self._train_thread_active = True
         self._questions_thread.start()
+        self._train_thread.start()
 
     def stop(self):
         self._question_thread_active = False
