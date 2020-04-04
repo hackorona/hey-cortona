@@ -30,7 +30,7 @@ class Classifier:
     def add_question(self, question: Question):
 
         # if there are no categories, add one
-        if self._train_data:
+        if not self._train_data:
             question.qid = question.question
             self._questions_database.add_question_category(question.qid)
         else:
