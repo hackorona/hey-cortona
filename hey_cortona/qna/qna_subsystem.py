@@ -77,7 +77,7 @@ class QNASubsystem:
                 for user in selected_users:
                     self._outbound_sender.send_from_bot(user, msg)
             else:
-                msg: str = f"You asked: {question.question}\nThe answer is: {category.questions[-1].question}"
+                msg: str = f"You asked: {question.question}\nThe answer is: {category.answers[-1]}"
                 self._outbound_sender.send_from_bot(asking_user, msg)
 
         self._questions_queue.put(ask)
