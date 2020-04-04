@@ -29,6 +29,12 @@ class QuestionsStore {
     return temp;
   }
 
+  public isExist(qid: string) {
+    return this.questions.find((questions) => {
+      return questions.qid === qid;
+    });
+  }
+
   public convertFromOneQuestions(element: any) {
     element.questions.forEach((question: Question, index: number) => {
       element.questions[index] = question.question;

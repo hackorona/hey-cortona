@@ -24,10 +24,18 @@
       background-color: yellow !important;
     }
   }
+  .err-msg {
+    font-size: 2rem;
+    background-color: red !important;
+    color: white;
+    &.hidden {
+      opacity: 0;
+    }
+  }
   .my-form {
     align-items: center;
-    margin-top: 1.7rem;
-    margin-bottom: 1.7rem;
+    margin-top: 0.3rem;
+    margin-bottom: 0.3rem;
     background-color: #369cf7;
     .button {
       font-size: 2rem;

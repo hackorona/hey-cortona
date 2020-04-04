@@ -11,6 +11,7 @@ interface IProps {}
 
 interface IState {
   qid: string;
+  err: string;
 }
 
 @observer
@@ -19,6 +20,7 @@ class App extends Component<IProps, IState> {
     super(props);
     this.state = {
       qid: "",
+      err: "",
     };
     questionsStore.getInitialData();
   }
@@ -29,10 +31,19 @@ class App extends Component<IProps, IState> {
         <Header className="my-header" size="huge">
           Corona Editor
         </Header>
+        <Header className={this.state.err ? "err-msg" : "err-msg hidden"}>
+          {this.state.err ? this.state.err : "aaa"}
+        </Header>
         <Form
           onSubmit={() => {
-            questionsStore.createNewCategory(this.state.qid);
-            this.setState({ qid: "" });
+            if (!this.state.qid) {
+              this.setState({ err: "You can't save an empty name" });
+            } else if (!questionsStore.isExist(this.state.qid)) {
+              questionsStore.createNewCategory(this.state.qid);
+              this.setState({ qid: "", err: "" });
+            } else {
+              this.setState({ err: "This qid is already exists" });
+            }
           }}
         >
           <Form.Field>
