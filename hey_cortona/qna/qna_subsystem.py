@@ -8,6 +8,7 @@ from bot_interaction.outbound_communication import BotSender
 from database.questions_database import QuestionsDatabase
 from database.user_database import UserDatabase
 from model.question import Question
+from model.questions_category import QuestionsCategory
 from model.user import User
 from nlp.classifier import Classifier
 
@@ -55,24 +56,29 @@ class QNASubsystem:
     def ask_question(self, asking_user: User, question: Question):
         def ask():
             self._classifier.add_question(question)
-            msg: str = f"{asking_user.name} asked:\n{question.question}\n(if you don't have an answer, respond '!')"
-            users: List[User] = self._users_database.get_all_users()
+            category: QuestionsCategory = self._questions_database.find_questions_category(question)
+            if len(category.questions) > 0:
+                msg: str = f"{asking_user.name} asked:\n{question.question}\n(if you don't have an answer, respond '!')"
+                users: List[User] = self._users_database.get_all_users()
 
-            users = [user for user in users if "yes" in user.help_us.lower() and user.answer_qid is None]
-            if asking_user in users:
-                users.remove(asking_user)
+                users = [user for user in users if "yes" in user.help_us.lower() and user.answer_qid is None]
+                if asking_user in users:
+                    users.remove(asking_user)
 
-            selected_users: List[User] = []
-            for i in range(min(self._number_of_users_to_ask, len(users))):
-                user = random.choice(users)
-                selected_users.append(user)
-                users.remove(user)
-                self._users_database.update_user(user, {"answer_qid": question.qid,
-                                                        "asking_user_id": asking_user.get_user_id(),
-                                                        "asked_question": question.question})
+                selected_users: List[User] = []
+                for i in range(min(self._number_of_users_to_ask, len(users))):
+                    user = random.choice(users)
+                    selected_users.append(user)
+                    users.remove(user)
+                    self._users_database.update_user(user, {"answer_qid": question.qid,
+                                                            "asking_user_id": asking_user.get_user_id(),
+                                                            "asked_question": question.question})
 
-            for user in selected_users:
-                self._outbound_sender.send_from_bot(user, msg)
+                for user in selected_users:
+                    self._outbound_sender.send_from_bot(user, msg)
+            else:
+                msg: str = f"You asked: {question.question}\nThe answer is: {category.questions[-1].question}"
+                self._outbound_sender.send_from_bot(asking_user, msg)
 
         self._questions_queue.put(ask)
 
