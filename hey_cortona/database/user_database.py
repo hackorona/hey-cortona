@@ -11,7 +11,8 @@ class UserDatabase(Database):
 
     def add_user(self, user: User):
         post = {"phone_number": user.phone_number, "name": user.name, "city": user.city, "help_us": user.help_us,
-                "admin": user.admin, "answer_qid": user.answer_qid}
+                "admin": user.admin, "answer_qid": user.answer_qid, "asked_question": user.asked_question,
+                "asking_user_id": user.asking_user_id}
         self._collection.insert_one(post)
 
     def find_user(self, user: User):

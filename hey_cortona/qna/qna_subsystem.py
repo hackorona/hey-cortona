@@ -55,7 +55,7 @@ class QNASubsystem:
     def ask_question(self, asking_user: User, question: Question):
         def ask():
             self._classifier.add_question(question)
-            msg: str = f"{asking_user.name} asked:\n{question.question}(if you don't have an answer, respond '!')"
+            msg: str = f"{asking_user.name} asked:\n{question.question}\n(if you don't have an answer, respond '!')"
             users: List[User] = self._users_database.get_all_users()
 
             users = [user for user in users if "yes" in user.help_us.lower()]
@@ -68,9 +68,20 @@ class QNASubsystem:
                 user = random.choice(users)
                 selected_users.append(user)
                 users.remove(user)
-                self._users_database.update_user(user, {"answer_qid": question.qid})
+                self._users_database.update_user(user, {"answer_qid": question.qid,
+                                                        "asking_user_id": asking_user.get_user_id(),
+                                                        "asked_question": question.question})
 
             for user in selected_users:
                 self._outbound_sender.send_from_bot(user, msg)
 
         self._questions_queue.put(ask)
+
+    def answer_question(self, answering_user: User, answer: str):
+        asking_user: User = User.from_user_id(answering_user.get_user_id())
+        msg: str = f"You asked: {answering_user.asked_question}\nThe answer is: {answer}"
+        self._questions_database.add_answer(answering_user.answer_qid, answer)
+        self._outbound_sender.send_from_bot(asking_user, msg)
+        self._users_database.update_user(asking_user, {"answer_qid": None,
+                                                       "asking_user_id": None,
+                                                       "asked_question": None})

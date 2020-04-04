@@ -109,8 +109,7 @@ def answer_question(users_database: UserDatabase, questions_database: QuestionsD
     user_id: str = request.get_json().get("user_id")
     user: User = User.from_user_id(user_id)
     user: User = users_database.find_user(user)
-    questions_database.add_answer(user.answer_qid, user_answer)
-    users_database.update_user(user, {"answer_qid": None})
+    qna_subsystem.answer_question(user, user_answer)
     return Response(status=200)
 
 
