@@ -17,7 +17,7 @@ class AppConfig:
 
     @property
     def ACCOUNT_SID(self) -> str:
-        return self._mongo_uri
+        return self._account_sid
 
     @property
     def AUTH_TOKEN(self) -> str:
