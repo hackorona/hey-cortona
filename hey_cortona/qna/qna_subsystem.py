@@ -1,3 +1,4 @@
+import json
 import random
 from queue import Queue
 from threading import Thread
@@ -9,6 +10,37 @@ from database.user_database import UserDatabase
 from model.question import Question
 from model.user import User
 from nlp.classifier import Classifier
+
+actions = {
+    "actions": [
+        {
+            "say": "Looks like another user has a question."
+        },
+        {
+            "say": "{name} asked:\n{question}"
+        },
+        {
+            "collect": {
+                "name": "answer_question",
+                "questions": [
+                    {
+                        "question": "What is your answer",
+                        "name": "answer"
+                    }
+                ],
+                "on_complete": {
+                    "redirect": {
+                        "method": "POST",
+                        "uri": "http://51.141.173.171/bot/answerQuestion/{qid}"
+                    }
+                }
+            }
+        },
+        {
+            "say": "Thanks for helping us :)"
+        }
+    ]
+}
 
 
 class QNASubsystem:
@@ -36,7 +68,8 @@ class QNASubsystem:
 
     def ask_question(self, asking_user: User, question: Question):
         def ask():
-            msg: str = f"{asking_user.name} asked:\n{question.question}"
+            msg: str = json.dump(actions)
+            msg = msg.format(name=asking_user.name, question=question.question, qid=question.qid)
 
             users: List[User] = [User.from_mongo(user) for user in self._database.get_all_elements()]
 
@@ -52,6 +85,6 @@ class QNASubsystem:
                 users.remove(user)
 
             for user in selected_users:
-                self._outbound_sender.send_from_bot(user, msg)
+                self._outbound_sender.send_actions_from_bot(user, msg)
 
-        self._questions_queue.put(ask)
+            self._questions_queue.put(ask)
