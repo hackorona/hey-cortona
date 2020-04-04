@@ -69,7 +69,7 @@ class QNASubsystem:
     def ask_question(self, asking_user: User, question: Question):
         def ask():
             msg: str = json.dumps(actions)
-            msg = msg.format(name=asking_user.name, question=question.question, qid=question.qid)
+            #msg = msg.format(name=asking_user.name, question=question.question, qid=question.qid)
 
             users: List[User] = [User.from_mongo(user) for user in self._database.get_all_elements()]
 
