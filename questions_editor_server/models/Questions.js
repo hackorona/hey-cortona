@@ -1,17 +1,21 @@
 const mongoose = require("mongoose");
 
-let questionsSchema = new mongoose.Schema({
-  qid: {
-    type: String,
-    require: true
+let questionsSchema = new mongoose.Schema(
+  {
+    qid: {
+      type: String,
+    },
+    questions: {
+      type: [],
+      require: false,
+    },
+    answers: {
+      type: Object,
+      require: true,
+      default: {},
+    },
   },
-  questions: {
-    type: [],
-    require: false
-  },
-  answers: {
-    require: false
-  }
-});
+  { minimize: false }
+);
 
-module.exports = mongoose.model("Questionss", questionsSchema);
+module.exports = mongoose.model("question", questionsSchema);

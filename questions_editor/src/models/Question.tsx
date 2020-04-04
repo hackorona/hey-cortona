@@ -1,9 +1,7 @@
-export default class Questions {
-  qid: string = "";
+export default class Question {
   question: string = "";
   isChecked = false;
-  constructor(qid: string, question: string) {
-    this.qid = qid;
+  constructor(question: string) {
     this.question = question;
   }
 }

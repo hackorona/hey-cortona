@@ -1,4 +1,4 @@
-import { observable, IObservableArray, action } from "mobx";
+import { observable, IObservableArray, action, toJS } from "mobx";
 import Questions from "../models/Questions";
 import Question from "../models/Question";
 import axios from "axios";
@@ -7,18 +7,52 @@ class QuestionsStore {
   @observable questions: IObservableArray<Questions> = observable([]);
   public async getInitialData() {
     const tempData = await axios.get("http://localhost:4000/questions");
-    this.questions.replace(tempData.data);
+    this.questions.replace(this.convertQuestions(tempData.data));
+  }
+
+  public convertQuestions(tempData: any) {
+    tempData.forEach((element: any) => {
+      element.questions.forEach((question: string, index: number) => {
+        element.questions[index] = new Question(question);
+      });
+    });
+    return tempData;
+  }
+
+  public convertFromQuestions(updateArray: any) {
+    const temp = toJS(this.questions);
+    updateArray.forEach((offset: number) => {
+      temp[offset].questions.forEach((question: any, index: number) => {
+        temp[offset].questions[index] = question.question;
+      });
+    });
+    return temp;
+  }
+
+  public convertFromOneQuestions(element: any) {
+    element.questions.forEach((question: Question, index: number) => {
+      element.questions[index] = question.question;
+    });
+
+    return element;
   }
 
   public async addQuestions(questions: Questions) {
-    await axios.post("http://localhost:4000/questions", questions);
+    const temp = await axios.post("http://localhost:4000/questions", questions);
+    this.questions.push(this.convertFromOneQuestions(temp.data));
   }
 
-  public async moveQueestions(questions: Questions) {
-    await axios.patch(
-      "http://localhost:4000/questions/" + questions.qid,
-      questions.questions
-    );
+  public async moveQuestions(updateArray: number[]) {
+    const tempData = this.convertFromQuestions(updateArray);
+    updateArray.forEach(async (place: any) => {
+      const questions = tempData[place];
+      console.log(questions.qid);
+      await axios.patch("http://localhost:4000/questions/", {
+        questions: questions.questions,
+        qid: questions.qid,
+      });
+    });
+    console.log(tempData);
   }
 
   public findQuestionsById(qid: string) {
@@ -39,45 +73,51 @@ class QuestionsStore {
   public createNewCategory(qid: string) {
     const newCategory: Questions = new Questions();
     newCategory.qid = qid;
-    this.questions.push(newCategory);
+    newCategory.questions = [new Question(qid)];
+    this.addQuestions(this.convertFromOneQuestions(newCategory));
   }
 
   @action
-  public moveMarked(qid: string) {
+  public async moveMarked(qid: string) {
     const tempMarked: Question[] = [];
     let target = this.questions[0];
     let remove: number[] = [];
+    const shouldUpdate: number[] = [];
+    let shouldUpdateCheck = false;
 
-    this.questions.forEach((items: Questions) => {
+    this.questions.forEach((items: Questions, offset) => {
       remove = [];
       if (items.qid === qid) {
         target = items;
       }
-      items.questions.forEach((item, index) => {
+      shouldUpdateCheck = false;
+      items.questions.forEach((item: Question, index) => {
         if (item.isChecked) {
           item.isChecked = false;
           tempMarked.push(item);
           remove.push(index);
+          shouldUpdateCheck = true;
         }
       });
+      if (shouldUpdateCheck) {
+        shouldUpdate.push(offset);
+      }
       for (let i = 0; i < remove.length; i++) {
         items.questions.splice(remove[i] - i, 1);
       }
     });
 
-    tempMarked.forEach(item => {
-      item.qid = target.qid;
+    tempMarked.forEach((item) => {
       target.questions.push(item);
     });
-
-    this.questions.replace(
-      this.questions.map(items => {
-        if (qid === items.qid) {
-          return target;
-        }
-        return items;
-      })
-    );
+    this.questions.map((items, index) => {
+      if (qid === items.qid) {
+        shouldUpdate.push(index);
+        return target;
+      }
+      return items;
+    });
+    this.moveQuestions(shouldUpdate);
   }
 }
 

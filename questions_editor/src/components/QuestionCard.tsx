@@ -17,7 +17,7 @@ class QuestionCard extends Component<IProps, IState> {
   constructor(props: Readonly<IProps>) {
     super(props);
     this.state = {
-      reRender: false
+      reRender: false,
     };
   }
 
@@ -37,7 +37,7 @@ class QuestionCard extends Component<IProps, IState> {
                 className={
                   info.questions[index].isChecked ? "checked" : undefined
                 }
-                key={question.question + index + question.qid}
+                key={question.question + index + this.props.qid}
                 onClick={() => {
                   questionsStore.markQuestion(info.qid, index);
                   this.setState({ reRender: !this.state.reRender });

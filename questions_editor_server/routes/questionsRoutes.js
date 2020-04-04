@@ -1,20 +1,20 @@
 const express = require("express");
 const router = express.Router();
-const Questions = require("../models/Questions");
+const questions = require("../models/questions");
 
 router.get("/", async (req, res) => {
   try {
-    const questions = await Questions.find();
-    res.json(questions);
+    const questions_arr = await questions.find();
+    res.json(questions_arr);
   } catch (err) {
     res.json(err);
   }
 });
 
 router.post("/", async (req, res) => {
-  const questions = new Questions(req.body);
+  const questions_obj = new questions(req.body);
   try {
-    const savedQuestions = await questions.save();
+    const savedQuestions = await questions_obj.save();
     res.json(savedQuestions);
   } catch (err) {
     console.log(err);
@@ -22,10 +22,10 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.patch("/:qid", async (req, res) => {
+router.patch("/", async (req, res) => {
   try {
-    const questionUpdate = await Questions.updateOne(
-      { qid: req.params.qid },
+    const questionUpdate = await questions.updateOne(
+      { qid: req.body.qid },
       { $set: { questions: req.body.questions } }
     );
     res.json(questionUpdate);
