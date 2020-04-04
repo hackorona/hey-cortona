@@ -24,14 +24,21 @@ class SystemContainer:
     immediate_subsystem: ImmediateSubsystem = None
     qna_subsystem: QNASubsystem = None
 
-    def __new__(cls):
-        def decorator(func):
-            return lambda: func(cls.users_database, cls.questions_database, cls.immediate_subsystem, cls.qna_subsystem)
+    @staticmethod
+    def wrap(func):
+        cls = SystemContainer
+        def decorator(*args, **kwargs):
+            func(cls.users_database, cls.questions_database, cls.immediate_subsystem,
+                                  cls.qna_subsystem)
+            return lambda: func(cls.users_database, cls.questions_database, cls.immediate_subsystem,
+                                  cls.qna_subsystem)
+
         return decorator
 
 
-@SystemContainer()
+
 @app.route('/bot/checkUser', methods=['POST'])
+@SystemContainer.wrap
 def check_user(users_database: UserDatabase, questions_database: QuestionsDatabase,
                immediate_subsystem: ImmediateSubsystem, qna_subsystem: QNASubsystem):
     user_id = request.get_json().get("user_id")
@@ -49,8 +56,9 @@ def check_user(users_database: UserDatabase, questions_database: QuestionsDataba
     return json.dumps(resp)
 
 
-@SystemContainer()
+
 @app.route('/bot/registerUserCompleted', methods=['POST'])
+@SystemContainer.wrap
 def register_user_completed(users_database: UserDatabase, questions_database: QuestionsDatabase,
                             immediate_subsystem: ImmediateSubsystem, qna_subsystem: QNASubsystem):
     memory: Dict = json.loads(request.values.get("Memory"))
@@ -63,8 +71,9 @@ def register_user_completed(users_database: UserDatabase, questions_database: Qu
     return jsonify(response)
 
 
-@SystemContainer()
+
 @app.route('/bot/immediateMessage', methods=['POST'])
+@SystemContainer.wrap
 def send_immediate_message(users_database: UserDatabase, questions_database: QuestionsDatabase,
                            immediate_subsystem: ImmediateSubsystem, qna_subsystem: QNASubsystem):
     message: str = request.get_json().get("CurrentInput")
@@ -78,8 +87,9 @@ def send_immediate_message(users_database: UserDatabase, questions_database: Que
     return Response(status=200)
 
 
-@SystemContainer()
+
 @app.route('/bot/qna', methods=['POST'])
+@SystemContainer.wrap
 def ask_qna(users_database: UserDatabase, questions_database: QuestionsDatabase,
             immediate_subsystem: ImmediateSubsystem, qna_subsystem: QNASubsystem):
     classifier: Classifier = Classifier(questions_database)
@@ -95,8 +105,10 @@ def ask_qna(users_database: UserDatabase, questions_database: QuestionsDatabase,
         "actions": [{"say": "Oops. Looks like I don't have an answer. I'll be right back with an answer."}]}
     return jsonify(response)
 
-@SystemContainer()
+
+
 @app.route('/bot/answerQuestion', methods=['POST'])
+@SystemContainer.wrap
 def answer_question(users_database: UserDatabase, questions_database: QuestionsDatabase,
                     immediate_subsystem: ImmediateSubsystem, qna_subsystem: QNASubsystem):
     user_answer: str = request.get_json().get("answer")
