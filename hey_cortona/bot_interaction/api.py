@@ -30,8 +30,8 @@ class SystemContainer:
         return decorator
 
 
-@app.route('/bot/checkUser', methods=['POST'])
 @SystemContainer()
+@app.route('/bot/checkUser', methods=['POST'])
 def check_user(users_database: UserDatabase, questions_database: QuestionsDatabase,
                immediate_subsystem: ImmediateSubsystem, qna_subsystem: QNASubsystem):
     user_id = request.get_json().get("user_id")
@@ -49,8 +49,8 @@ def check_user(users_database: UserDatabase, questions_database: QuestionsDataba
     return json.dumps(resp)
 
 
-@app.route('/bot/registerUserCompleted', methods=['POST'])
 @SystemContainer()
+@app.route('/bot/registerUserCompleted', methods=['POST'])
 def register_user_completed(users_database: UserDatabase, questions_database: QuestionsDatabase,
                             immediate_subsystem: ImmediateSubsystem, qna_subsystem: QNASubsystem):
     memory: Dict = json.loads(request.values.get("Memory"))
@@ -63,8 +63,8 @@ def register_user_completed(users_database: UserDatabase, questions_database: Qu
     return jsonify(response)
 
 
-@app.route('/bot/immediateMessage', methods=['POST'])
 @SystemContainer()
+@app.route('/bot/immediateMessage', methods=['POST'])
 def send_immediate_message(users_database: UserDatabase, questions_database: QuestionsDatabase,
                            immediate_subsystem: ImmediateSubsystem, qna_subsystem: QNASubsystem):
     message: str = request.get_json().get("CurrentInput")
@@ -78,8 +78,8 @@ def send_immediate_message(users_database: UserDatabase, questions_database: Que
     return Response(status=200)
 
 
-@app.route('/bot/qna', methods=['POST'])
 @SystemContainer()
+@app.route('/bot/qna', methods=['POST'])
 def ask_qna(users_database: UserDatabase, questions_database: QuestionsDatabase,
             immediate_subsystem: ImmediateSubsystem, qna_subsystem: QNASubsystem):
     classifier: Classifier = Classifier(questions_database)
@@ -95,9 +95,8 @@ def ask_qna(users_database: UserDatabase, questions_database: QuestionsDatabase,
         "actions": [{"say": "Oops. Looks like I don't have an answer. I'll be right back with an answer."}]}
     return jsonify(response)
 
-
-@app.route('/bot/answerQuestion', methods=['POST'])
 @SystemContainer()
+@app.route('/bot/answerQuestion', methods=['POST'])
 def answer_question(users_database: UserDatabase, questions_database: QuestionsDatabase,
                     immediate_subsystem: ImmediateSubsystem, qna_subsystem: QNASubsystem):
     user_answer: str = request.get_json().get("answer")
