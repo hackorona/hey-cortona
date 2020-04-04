@@ -57,7 +57,7 @@ class QNASubsystem:
         def ask():
             self._classifier.add_question(question)
             category: QuestionsCategory = self._questions_database.find_questions_category(question)
-            if len(category.questions) > 0:
+            if len(category.answers) < 1:
                 msg: str = f"{asking_user.name} asked:\n{question.question}\n(if you don't have an answer, respond '!')"
                 users: List[User] = self._users_database.get_all_users()
 
