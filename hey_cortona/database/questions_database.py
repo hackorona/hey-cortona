@@ -15,9 +15,9 @@ class QuestionsDatabase(Database):
 
         if mongo_questions_category is not None:
             questions_category = QuestionsCategory.from_mongo(mongo_questions_category)
-            questions_category.questions.append(question)
+            questions_category.add_question(question)
             self._collection.update_one({"qid": questions_category.qid},
-                                        {"$set": {"questions": questions_category.questions}})
+                                        {"$set": {"questions": questions_category.get_questions_strings()}})
         else:
             # if category does not exists add new one
             self.add_question_category(question.question)

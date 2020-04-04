@@ -25,5 +25,13 @@ class QuestionsCategory:
 
         return mongo_obj
 
+    def add_question(self, question: str):
+        quet: Question = Question(question, self.qid)
+        self.questions.append(quet)
+        return quet
+
+    def get_questions_strings(self):
+        return [q.question for q in self.questions]
+
     def __str__(self):
         return f"{self.qid}:{self.questions} - answers: {self.answers}"
