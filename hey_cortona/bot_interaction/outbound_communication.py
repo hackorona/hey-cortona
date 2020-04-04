@@ -22,6 +22,7 @@ class OutboundSender:
         )
 
     def send_actions(self, sender: User, recipient: User, actions: str):
+        self._client.request()
         self._client.messages.create(
             persistent_action=actions,
             from_=sender.get_user_id(),
