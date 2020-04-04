@@ -25,8 +25,7 @@ class QuestionsDatabase(Database):
     def add_answer(self, qid: str, answer: str):
 
         mongo_question_category: Dict = self._collection.find_one({"qid": qid})
-        mongo_question_category["answers"][answer] = None  # add answer
-        self._collection.update_one({"qid": qid}, {"$set": {"answers": mongo_question_category["answers"]}})
+        self._collection.update_one({"qid": qid}, {"$set": {"answers": mongo_question_category["answers"] + [answer]}})
 
     def find_questions_category(self, question: Question):
         mongo_questions_category: Dict = self._collection.find_one({"qid": question.qid})
@@ -42,7 +41,7 @@ class QuestionsDatabase(Database):
         return questions
 
     def add_question_category(self, qid: str):
-        question_category: QuestionsCategory = QuestionsCategory(qid, [Question(qid, qid)], {})
+        question_category: QuestionsCategory = QuestionsCategory(qid, [Question(qid, qid)], [])
         self._collection.insert_one(question_category.to_mongo())
 
     def delete_question_category(self, questions: QuestionsCategory):
