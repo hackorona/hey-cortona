@@ -36,13 +36,15 @@ def check_user():
     user: User = User.from_user_id(user_id)
 
     db_user: User = users_database.findUser(user)
-    next_task: str = "proceed"
+    resp: Dict[str, str] = {}
     if db_user is None:
-        next_task = "register"
+        resp["next_task"] = "register"
     elif db_user.answer_qid is not None:
-        next_task = "answer"
+        resp["next_task"] = "answer"
+        resp["answer_qid"] = db_user.answer_qid
+    else:
+        resp["next_task"] = "proceed"
 
-    resp: Dict[str, str] = {"next_task": next_task, "answer_qid": db_user.answer_qid}
     return json.dumps(resp)
 
 
