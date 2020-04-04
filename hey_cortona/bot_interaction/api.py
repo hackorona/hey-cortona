@@ -88,13 +88,12 @@ def send_immediate_message(users_database: UserDatabase, questions_database: Que
 @SystemContainer.wrap
 def ask_qna(users_database: UserDatabase, questions_database: QuestionsDatabase,
             immediate_subsystem: ImmediateSubsystem, qna_subsystem: QNASubsystem):
-    classifier: Classifier = Classifier(questions_database)
+    
     user_id = request.get_json().get("UserIdentifier")
     user: User = User.from_user_id(user_id)
     user: User = users_database.find_user(user)
     message: str = request.get_json().get("CurrentInput")
     question: Question = Question(message)
-    classifier.add_question(question)
     qna_subsystem.ask_question(user, question)
 
     response: Dict = {
