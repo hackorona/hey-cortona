@@ -44,6 +44,7 @@ def check_user():
     else:
         resp["next_task"] = "proceed"
 
+
     return json.dumps(resp)
 
 
@@ -72,10 +73,10 @@ def send_immediate_message():
 @app.route('/bot/qna', methods=['POST'])
 def ask_qna():
     classifier: Classifier = Classifier(questions_database)
-    user_id = request.values.get("UserIdentifier")
+    user_id = request.get_json().get("UserIdentifier")
     user: User = User.from_user_id(user_id)
     user: User = users_database.findUser(user)
-    message: str = request.values.get("CurrentInput")
+    message: str = request.get_json().get("CurrentInput")
     question: Question = Question(message)
     classifier.add_question(question)
     print("Finished nlp")
