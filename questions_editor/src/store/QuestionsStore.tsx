@@ -32,7 +32,7 @@ class QuestionsStore {
   }
 
   public isExist(qid: string) {
-    return this.questions.find((questions) => {
+    return this.questions.find((questions: Questions) => {
       return questions.qid === qid;
     });
   }

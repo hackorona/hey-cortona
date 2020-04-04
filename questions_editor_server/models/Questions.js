@@ -5,15 +5,16 @@ let questionsSchema = new mongoose.Schema(
   {
     qid: {
       type: String,
+      require: true,
     },
     questions: {
       type: [],
-      require: false,
+      require: true,
     },
     answers: {
-      type: Object,
+      type: [],
       require: true,
-      default: {},
+      default: [],
     },
   },
   { minimize: false }

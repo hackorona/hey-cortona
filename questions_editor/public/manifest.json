@@ -1,6 +1,6 @@
 {
-  "short_name": "Tic Tac Toe",
-  "name": "Tic Tac Toe by Dror Tal",
+  "short_name": "Cortona Editor",
+  "name": "Cortona Editor by Dror Tal",
   "start_url": ".",
   "display": "standalone"
 }
