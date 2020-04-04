@@ -9,7 +9,7 @@ class Classifier:
     def __init__(self, questions_database: QuestionsDatabase):
         self._classifier: NaiveBayesClassifier = None
         self._set: Dict[str, int] = {}
-        self.pass_percentage = 50
+        self.pass_percentage = 70
         self.questions_database = questions_database
         self.train_data = None
         self.train()
@@ -19,18 +19,18 @@ class Classifier:
         amount = 0
         for sent in self.train_tuples_array():
             if sent[1] == qid:
-                sum += fuzz.partial_ratio(sentence, sent[0])
+                sum += fuzz.token_sort_ratio(sentence, sent[0].lower())
                 amount += 1
 
         return sum / amount
 
     def add_question(self, question: Question):
         print("\nstart nlp\n")
-        qid: str = self._classifier.classify(question.question)
+        qid: str = self._classifier.classify(question.question.lower())
 
-        similarity_percentage: float = self._fuzzy_check(question.question, qid)
+        similarity_percentage: float = self._fuzzy_check(question.question.lower(), qid)
 
-        print(f'\nqid: {qid}, sim_prec: {similarity_percentage}, question: {question.question}\n')
+        print(f'\nqid: {qid}, sim_prec: {similarity_percentage}, question: {question.question.lower()}\n')
         if similarity_percentage >= self.pass_percentage:
             self.questions_database.add_question(question.question, qid)
         else:
@@ -42,7 +42,7 @@ class Classifier:
         train_tuples = []
         for questions in self.train_data:
             for question in questions.questions:
-                train_tuples.append((question,questions.qid))
+                train_tuples.append((question, questions.qid))
         return train_tuples
 
     def train(self):
