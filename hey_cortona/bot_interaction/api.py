@@ -16,13 +16,13 @@ app = Flask(__name__)
 
 
 class SystemContainer:
-    app_config: AppConfig
-    bot: User
-    sender: BotSender
-    users_database: UserDatabase
-    questions_database: QuestionsDatabase
-    immediate_subsystem: ImmediateSubsystem
-    qna_subsystem: QNASubsystem
+    app_config: AppConfig = None
+    bot: User = None
+    sender: BotSender = None
+    users_database: UserDatabase = None
+    questions_database: QuestionsDatabase = None
+    immediate_subsystem: ImmediateSubsystem = None
+    qna_subsystem: QNASubsystem = None
 
     def __new__(cls):
         return lambda func: func(cls.users_database, cls.questions_database, cls.immediate_subsystem, cls.qna_subsystem)
