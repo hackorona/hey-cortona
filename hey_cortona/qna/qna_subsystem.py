@@ -58,8 +58,7 @@ class QNASubsystem:
             msg: str = f"{asking_user.name} asked:\n{question.question}\n(if you don't have an answer, respond '!')"
             users: List[User] = self._users_database.get_all_users()
 
-            users = [user for user in users if "yes" in user.help_us.lower()]
-
+            users = [user for user in users if "yes" in user.help_us.lower() and user.answer_qid is None]
             if asking_user in users:
                 users.remove(asking_user)
 
