@@ -24,11 +24,11 @@ class QuestionsDatabase(Database):
 
     def add_question(self, question: str, qid: str):
         result = self._collection.find_one({"qid": qid})
-        print (f'\n\nresult : {result} , qid : {qid} , origin_que : {question}\n\n')
+        print(f'\n\nresult : {result} , qid : {qid} , origin_que : {question}\n\n')
         if result is not None:
             result = Questions.from_mongo(result)
             result.questions.append(question)
-            print (f'\n\nque from mongo : {result}\n\n')
+            print(f'\n\nque from mongo : {result}\n\n')
             self._collection.update_one({"qid": qid}, {"$set": {"questions": result.questions}})
 
         return result
@@ -36,10 +36,10 @@ class QuestionsDatabase(Database):
     def add_answer(self, qid: str, answer: str):
         mongo_question_category: Dict = self._collection.find_one({"qid": qid})
         mongo_question_category["answers"][answer] = None
-        self._collection.update_one({"qid": qid}, {"answers": mongo_question_category["answers"]})
+        self._collection.update_one({"qid": qid}, {"$set": {"answers": mongo_question_category["answers"]}})
 
     def find_question(self, question: Question):
-        #TODO fix this crap code !!!!!!!!!!!
+        # TODO fix this crap code !!!!!!!!!!!
         result = self._collection.find_one({"qid": question.qid})
 
         if result is not None:
