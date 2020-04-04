@@ -124,4 +124,5 @@ def start_server(app_config: AppConfig):
     SystemContainer.immediate_subsystem = ImmediateSubsystem(SystemContainer.users_database, SystemContainer.sender)
     SystemContainer.qna_subsystem = QNASubsystem(SystemContainer.users_database, SystemContainer.questions_database,
                                                  SystemContainer.sender, app_config.number_of_people_to_ask)
+    SystemContainer.qna_subsystem.start()
     app.run(host="0.0.0.0", port=80)
