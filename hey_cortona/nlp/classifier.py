@@ -53,7 +53,7 @@ class Classifier:
 
         for questions in self._train_data:
             for question in questions.questions:
-                train_tuples.append((question, questions.qid))
+                train_tuples.append((question.question, questions.qid))
         return train_tuples
 
     def train(self):
