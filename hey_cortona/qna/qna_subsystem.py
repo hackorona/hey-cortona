@@ -53,7 +53,10 @@ class QNASubsystem:
         self._questions_thread.join()
         self._train_thread.join()
 
-    def ask_question(self, asking_user: User, question: Question):
+    def ask_question(self, asking_user: User, question: Question, number_of_people_to_ask: int = None,
+                     exclude_users: List[User] = []):
+        number_of_people_to_ask = number_of_people_to_ask or self._number_of_users_to_ask
+
         def ask():
             self._classifier.add_question(question)
             category: QuestionsCategory = self._questions_database.find_questions_category(question)
@@ -63,12 +66,15 @@ class QNASubsystem:
                 msg: str = f"{asking_user.name} asked:\n{question.question}\n(if you don't have an answer, respond '!')"
                 users: List[User] = self._users_database.get_all_users()
 
-                users = [user for user in users if "yes" in user.help_us.lower() and user.answer_qid is None]
+                exclude_numbers: List[str] = [u.get_user_id() for u in exclude_users]
+                users = [user for user in users if
+                         "yes" in user.help_us.lower() and user.answer_qid is None and
+                         user.get_user_id() not in exclude_numbers]
                 if asking_user in users:
                     users.remove(asking_user)
 
                 selected_users: List[User] = []
-                for i in range(min(self._number_of_users_to_ask, len(users))):
+                for i in range(min(number_of_people_to_ask, len(users))):
                     user = random.choice(users)
                     selected_users.append(user)
                     users.remove(user)
@@ -90,5 +96,12 @@ class QNASubsystem:
         self._questions_database.add_answer(answering_user.answer_qid, answer)
         self._outbound_sender.send_from_bot(asking_user, msg)
         self._users_database.update_user(answering_user, {"answer_qid": None,
+                                                          "asking_user_id": None,
+                                                          "asked_question": None})
+
+    def decline_question(self, declining_user: User):
+        asking_user: User = self._users_database.find_user(User.from_user_id(declining_user.asking_user_id))
+        self.ask_question(asking_user, Question(asking_user.asked_question), 1, [asking_user])
+        self._users_database.update_user(declining_user, {"answer_qid": None,
                                                           "asking_user_id": None,
                                                           "asked_question": None})

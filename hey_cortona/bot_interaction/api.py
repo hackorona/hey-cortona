@@ -103,11 +103,16 @@ def ask_qna(users_database: UserDatabase, questions_database: QuestionsDatabase,
 @SystemContainer.wrap
 def answer_question(users_database: UserDatabase, questions_database: QuestionsDatabase,
                     immediate_subsystem: ImmediateSubsystem, qna_subsystem: QNASubsystem):
+
     user_answer: str = request.get_json().get("answer")
     user_id: str = request.get_json().get("user_id")
     user: User = User.from_user_id(user_id)
     user: User = users_database.find_user(user)
-    qna_subsystem.answer_question(user, user_answer)
+    if user_answer is not None:
+        qna_subsystem.answer_question(user, user_answer)
+    else:
+        qna_subsystem.decline_question(user)
+
     return Response(status=200)
 
 
