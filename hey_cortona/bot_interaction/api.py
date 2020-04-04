@@ -88,7 +88,7 @@ def ask_qna():
 @app.route('/bot/answerQuestion', methods=['POST'])
 def answerQuestion():
     user_answer: str = request.get_json().get("answer")
-    user_id: str = request.get_json().get("answer")
+    user_id: str = request.get_json().get("user_id")
     user: User = User.from_user_id(user_id)
     user: User = users_database.findUser(user)
     questions_database.add_answer(user.answer_qid, user_answer)
