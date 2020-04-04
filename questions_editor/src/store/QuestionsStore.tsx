@@ -10,6 +10,7 @@ class QuestionsStore {
     this.questions.replace(this.convertQuestions(tempData.data));
   }
 
+  // Convert the info from the database to my objects
   public convertQuestions(tempData: any) {
     tempData.forEach((element: any) => {
       element.questions.forEach((question: string, index: number) => {
@@ -19,6 +20,7 @@ class QuestionsStore {
     return tempData;
   }
 
+  // Convert my objects to the database one's
   public convertFromQuestions(updateArray: any) {
     const temp = toJS(this.questions);
     updateArray.forEach((offset: number) => {
