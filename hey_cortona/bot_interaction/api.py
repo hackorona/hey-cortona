@@ -1,4 +1,5 @@
 import json
+from functools import wraps
 from typing import Dict
 
 from flask import Flask, request, jsonify, Response
@@ -27,14 +28,12 @@ class SystemContainer:
     @staticmethod
     def wrap(func):
         cls = SystemContainer
-        def decorator(*args, **kwargs):
-            func(cls.users_database, cls.questions_database, cls.immediate_subsystem,
-                                  cls.qna_subsystem)
-            return lambda: func(cls.users_database, cls.questions_database, cls.immediate_subsystem,
-                                  cls.qna_subsystem)
+
+        @wraps(func)
+        def decorator():
+            return func(cls.users_database, cls.questions_database, cls.immediate_subsystem, cls.qna_subsystem)
 
         return decorator
-
 
 
 @app.route('/bot/checkUser', methods=['POST'])
@@ -56,7 +55,6 @@ def check_user(users_database: UserDatabase, questions_database: QuestionsDataba
     return json.dumps(resp)
 
 
-
 @app.route('/bot/registerUserCompleted', methods=['POST'])
 @SystemContainer.wrap
 def register_user_completed(users_database: UserDatabase, questions_database: QuestionsDatabase,
@@ -69,7 +67,6 @@ def register_user_completed(users_database: UserDatabase, questions_database: Qu
 
     response: Dict = {"actions": [{"say": "You have registered successfully!"}]}
     return jsonify(response)
-
 
 
 @app.route('/bot/immediateMessage', methods=['POST'])
@@ -85,7 +82,6 @@ def send_immediate_message(users_database: UserDatabase, questions_database: Que
     else:
         return {"actions": [{"redirect": "task://fallback"}]}
     return Response(status=200)
-
 
 
 @app.route('/bot/qna', methods=['POST'])
@@ -104,7 +100,6 @@ def ask_qna(users_database: UserDatabase, questions_database: QuestionsDatabase,
     response: Dict = {
         "actions": [{"say": "Oops. Looks like I don't have an answer. I'll be right back with an answer."}]}
     return jsonify(response)
-
 
 
 @app.route('/bot/answerQuestion', methods=['POST'])
