@@ -78,7 +78,7 @@ class QNASubsystem:
         self._questions_queue.put(ask)
 
     def answer_question(self, answering_user: User, answer: str):
-        asking_user: User = User.from_user_id(answering_user.get_user_id())
+        asking_user: User = User.from_user_id(answering_user.asking_user_id)
         msg: str = f"You asked: {answering_user.asked_question}\nThe answer is: {answer}"
         self._questions_database.add_answer(answering_user.answer_qid, answer)
         self._outbound_sender.send_from_bot(asking_user, msg)
