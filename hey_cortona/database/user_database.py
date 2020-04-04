@@ -1,3 +1,5 @@
+from typing import Dict
+
 from database.database import Database
 from model.user import User
 
@@ -19,6 +21,9 @@ class UserDatabase(Database):
             return User.from_mongo(result)
 
         return result
+
+    def updateUser(self, user: User, update: Dict):
+        self._collection.update_one({"phone_number": user.phone_number}, {"$set": update})
 
     def get_all_users(self):
         users = super().get_all_elements()

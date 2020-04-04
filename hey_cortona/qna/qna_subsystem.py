@@ -68,9 +68,7 @@ class QNASubsystem:
 
     def ask_question(self, asking_user: User, question: Question):
         def ask():
-            msg: str = json.dumps(actions)
-            #msg = msg.format(name=asking_user.name, question=question.question, qid=question.qid)
-
+            msg: str = f"{asking_user.name} asked:\n{question.question}"
             users: List[User] = [User.from_mongo(user) for user in self._database.get_all_elements()]
 
             users = [user for user in users if "yes" in user.help_us.lower()]
@@ -83,8 +81,10 @@ class QNASubsystem:
                 user = random.choice(users)
                 selected_users.append(user)
                 users.remove(user)
+                self._database.updateUser(user, {"answer_qid": question.qid})
+
 
             for user in selected_users:
-                self._outbound_sender.send_actions_from_bot(user, msg)
+                self._outbound_sender.send_from_bot(user, msg)
 
         self._questions_queue.put(ask)

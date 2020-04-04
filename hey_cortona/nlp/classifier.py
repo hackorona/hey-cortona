@@ -32,9 +32,12 @@ class Classifier:
 
         print(f'\nqid: {qid}, sim_prec: {similarity_percentage}, question: {question.question.lower()}\n')
         if similarity_percentage >= self.pass_percentage:
-            self.questions_database.add_question(question.question, qid)
+            question.qid = qid
+            self.questions_database.add_question(question.question, question.qid)
+
         else:
-            self.questions_database.add_questions(question.question)
+            question.qid = question.question
+            self.questions_database.add_questions(question.qid)
 
         self.train()
 
