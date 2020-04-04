@@ -68,7 +68,7 @@ class QNASubsystem:
 
     def ask_question(self, asking_user: User, question: Question):
         def ask():
-            msg: str = f"{asking_user.name} asked:\n{question.question}"
+            msg: str = f"{asking_user.name} asked:\n{question.question}(if you don't have an answer, respond '!')"
             users: List[User] = [User.from_mongo(user) for user in self._database.get_all_elements()]
 
             users = [user for user in users if "yes" in user.help_us.lower()]
