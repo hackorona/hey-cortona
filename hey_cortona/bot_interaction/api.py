@@ -88,7 +88,7 @@ def send_immediate_message(users_database: UserDatabase, questions_database: Que
 @SystemContainer.wrap
 def ask_qna(users_database: UserDatabase, questions_database: QuestionsDatabase,
             immediate_subsystem: ImmediateSubsystem, qna_subsystem: QNASubsystem):
-    
+
     user_id = request.get_json().get("UserIdentifier")
     user: User = User.from_user_id(user_id)
     user: User = users_database.find_user(user)

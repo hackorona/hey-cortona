@@ -54,6 +54,7 @@ class QNASubsystem:
 
     def ask_question(self, asking_user: User, question: Question):
         def ask():
+            self._classifier.add_question(question)
             msg: str = f"{asking_user.name} asked:\n{question.question}(if you don't have an answer, respond '!')"
             users: List[User] = self._users_database.get_all_users()
 
@@ -71,7 +72,5 @@ class QNASubsystem:
 
             for user in selected_users:
                 self._outbound_sender.send_from_bot(user, msg)
-
-            self._classifier.add_question(question)
 
         self._questions_queue.put(ask)
