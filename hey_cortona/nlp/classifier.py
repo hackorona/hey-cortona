@@ -43,12 +43,10 @@ class Classifier:
                 question.qid = question.question
                 self.questions_database.add_question_category(question.qid)
 
-            self.train()
+        self.train()
 
     def train_tuples_array(self) -> List[Tuple[str, str]]:
         train_tuples = []
-
-        assert self.train_data, "Train data is None!"
 
         for questions in self.train_data:
             for question in questions.questions:
@@ -57,4 +55,5 @@ class Classifier:
 
     def train(self):
         self.train_data = self.questions_database.get_all_questions()
-        self._classifier = NaiveBayesClassifier(self.train_tuples_array())
+        if self.train_data is not None:
+            self._classifier = NaiveBayesClassifier(self.train_tuples_array())
