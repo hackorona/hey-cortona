@@ -41,7 +41,6 @@ def check_user():
         resp["next_task"] = "register"
     elif db_user.answer_qid is not None:
         resp["next_task"] = "answer"
-        resp["answer_qid"] = db_user.answer_qid
     else:
         resp["next_task"] = "proceed"
 
@@ -85,6 +84,17 @@ def ask_qna():
     response: Dict = {
         "actions": [{"say": "Oops. Looks like I don't have an answer. I'll be right back with an answer."}]}
     return jsonify(response)
+
+@app.route('/bot/answerQuestion', methods=['POST'])
+def answerQuestion():
+    memory: Dict = json.loads(request.values.get("Memory"))
+    answers: Dict = memory.get("twilio").get("collected_data").get("register").get("answers")
+    user_answer = answers.get("answer").get("answer")
+    user_id: str = request.values.get("UserIdentifier")
+    user: User = User.from_user_id(user_id)
+    user: User = users_database.findUser(user)
+    questions_database.add_answer(user.answer_qid, user_answer)
+    users_database.updateUser(user, {"answer_qid": None})
 
 
 def start_server():

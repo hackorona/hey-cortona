@@ -1,3 +1,5 @@
+from typing import Dict
+
 from database.database import Database
 from model.question import Question
 from model.questions import Questions
@@ -31,6 +33,10 @@ class QuestionsDatabase(Database):
 
         return result
 
+    def add_answer(self, qid: str, answer: str):
+        mongo_question_category: Dict = self._collection.find_one({"qid": qid})
+        self._collection.update_one({"qid": qid}, {"answers": mongo_question_category["answers"] + [answer]})
+
     def find_question(self, question: Question):
         #TODO fix this crap code !!!!!!!!!!!
         result = self._collection.find_one({"qid": question.qid})
@@ -47,9 +53,9 @@ class QuestionsDatabase(Database):
             questions_arr.append(Questions.from_mongo(question))
         return questions_arr
 
-    def add_questions(self, question: str):
-        result = Questions(question, [question], {})
+    def add_question_category(self, qid: str):
+        result = Questions(qid, [qid], {})
         self._collection.insert_one(result.to_mongo())
 
-    def delete_question(self, questions: Questions):
+    def delete_question_category(self, questions: Questions):
         self._collection.delete_one({"qid": questions.qid})

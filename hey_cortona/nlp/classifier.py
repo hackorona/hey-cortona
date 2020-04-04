@@ -37,7 +37,7 @@ class Classifier:
 
         else:
             question.qid = question.question
-            self.questions_database.add_questions(question.qid)
+            self.questions_database.add_question_category(question.qid)
 
         self.train()
 
