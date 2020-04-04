@@ -11,6 +11,15 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.delete("/", async (req, res) => {
+  try {
+    const removedQuestions = await questions.remove({ qid: req.body.qid });
+    res.json(removedQuestions);
+  } catch (err) {
+    res.json(err);
+  }
+});
+
 router.post("/", async (req, res) => {
   const questions_obj = new questions(req.body);
   try {

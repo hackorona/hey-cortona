@@ -38,21 +38,36 @@ class QuestionsStore {
   }
 
   public async addQuestions(questions: Questions) {
-    const temp = await axios.post("http://localhost:4000/questions", questions);
-    this.questions.push(this.convertFromOneQuestions(temp.data));
+    await axios.post("http://localhost:4000/questions", questions);
+    await this.getInitialData();
+  }
+
+  public async deleteQuestions(qid: string) {
+    await axios.delete("http://localhost:4000/questions/", {
+      data: {
+        qid: qid,
+      },
+    });
+    await this.getInitialData();
+  }
+
+  public async updateQuestions(questions: any) {
+    return await axios.patch("http://localhost:4000/questions/", {
+      questions: questions.questions,
+      qid: questions.qid,
+    });
   }
 
   public async moveQuestions(updateArray: number[]) {
     const tempData = this.convertFromQuestions(updateArray);
     updateArray.forEach(async (place: any) => {
       const questions = tempData[place];
-      console.log(questions.qid);
-      await axios.patch("http://localhost:4000/questions/", {
-        questions: questions.questions,
-        qid: questions.qid,
-      });
+      if (questions.questions.length > 0) {
+        this.updateQuestions(questions);
+      } else {
+        this.deleteQuestions(questions.qid);
+      }
     });
-    console.log(tempData);
   }
 
   public findQuestionsById(qid: string) {
@@ -77,6 +92,30 @@ class QuestionsStore {
     this.addQuestions(this.convertFromOneQuestions(newCategory));
   }
 
+  public deleteMarked() {
+    let shouldUpdateCheck = false;
+    const shouldUpdate: number[] = [];
+    let remove: number[] = [];
+    this.questions.forEach((items: Questions, offset: number) => {
+      shouldUpdateCheck = false;
+      remove = [];
+      items.questions.forEach((item: Question, index) => {
+        if (item.isChecked) {
+          shouldUpdateCheck = true;
+          remove.push(index);
+        }
+      });
+      if (shouldUpdateCheck) {
+        shouldUpdate.push(offset);
+      }
+      for (let i = 0; i < remove.length; i++) {
+        items.questions.splice(remove[i] - i, 1);
+      }
+    });
+
+    this.moveQuestions(shouldUpdate);
+  }
+
   @action
   public async moveMarked(qid: string) {
     const tempMarked: Question[] = [];
@@ -85,7 +124,7 @@ class QuestionsStore {
     const shouldUpdate: number[] = [];
     let shouldUpdateCheck = false;
 
-    this.questions.forEach((items: Questions, offset) => {
+    this.questions.forEach((items: Questions, offset: number) => {
       remove = [];
       if (items.qid === qid) {
         target = items;
@@ -110,7 +149,7 @@ class QuestionsStore {
     tempMarked.forEach((item) => {
       target.questions.push(item);
     });
-    this.questions.map((items, index) => {
+    this.questions.map((items: Questions, index: number) => {
       if (qid === items.qid) {
         shouldUpdate.push(index);
         return target;
