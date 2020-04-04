@@ -35,7 +35,8 @@ class QuestionsDatabase(Database):
 
     def add_answer(self, qid: str, answer: str):
         mongo_question_category: Dict = self._collection.find_one({"qid": qid})
-        self._collection.update_one({"qid": qid}, {"answers": mongo_question_category["answers"] + {answer: None}})
+        mongo_question_category["answers"][answer] = None
+        self._collection.update_one({"qid": qid}, {"answers": mongo_question_category["answers"]})
 
     def find_question(self, question: Question):
         #TODO fix this crap code !!!!!!!!!!!
