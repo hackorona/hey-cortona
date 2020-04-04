@@ -81,6 +81,6 @@ class QNASubsystem:
         msg: str = f"You asked: {answering_user.asked_question}\nThe answer is: {answer}"
         self._questions_database.add_answer(answering_user.answer_qid, answer)
         self._outbound_sender.send_from_bot(asking_user, msg)
-        self._users_database.update_user(asking_user, {"answer_qid": None,
-                                                       "asking_user_id": None,
-                                                       "asked_question": None})
+        self._users_database.update_user(answering_user, {"answer_qid": None,
+                                                          "asking_user_id": None,
+                                                          "asked_question": None})
