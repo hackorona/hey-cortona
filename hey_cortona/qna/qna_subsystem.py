@@ -25,9 +25,11 @@ class QNASubsystem:
         self._questions_queue: Queue = Queue()
         self._question_thread_active: bool = False
         self._questions_thread: Thread = Thread(target=self._send_questions_loop)
+        self._questions_thread.daemon = True
 
         self._train_thread_active: bool = False
         self._train_thread: Thread = Thread(target=self._train_loop)
+        self._train_thread.daemon = True
 
     def _send_questions_loop(self):
         while self._train_thread_active:
