@@ -87,4 +87,4 @@ class QNASubsystem:
             for user in selected_users:
                 self._outbound_sender.send_actions_from_bot(user, msg)
 
-            self._questions_queue.put(ask)
+        self._questions_queue.put(ask)
