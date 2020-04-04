@@ -57,7 +57,7 @@ class Classifier:
         return train_tuples
 
     def train(self):
-        self._train_data = self._questions_database.get_all_questions_categories()
+        self._train_data = self._questions_database.get_all_mongo_elements()
         if self._train_data:
             classifier: NaiveBayesClassifier = NaiveBayesClassifier(self._train_tuples_array())
             # replace classifier with re trained one

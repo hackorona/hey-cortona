@@ -41,6 +41,9 @@ class QuestionsDatabase(Database):
                                      mongo_questions_categories]
         return questions
 
+    def get_all_mongo_elements(self):
+        return super()._get_all_elements()
+
     def add_question_category(self, qid: str):
         question_category: QuestionsCategory = QuestionsCategory(qid, [Question(qid, qid)], {})
         self._collection.insert_one(question_category.to_mongo())
