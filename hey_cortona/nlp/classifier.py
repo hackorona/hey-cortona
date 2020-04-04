@@ -43,7 +43,7 @@ class Classifier:
                 question.qid = question.question
                 self.questions_database.add_question_category(question.qid)
 
-        self.train()
+            self.train()
 
     def train_tuples_array(self) -> List[Tuple[str, str]]:
         train_tuples = []
