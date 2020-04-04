@@ -8,7 +8,7 @@ from fuzzywuzzy import fuzz
 
 class Classifier:
 
-    def __init__(self, questions_database: QuestionsDatabase, similarity_percentage: float = 50):
+    def __init__(self, questions_database: QuestionsDatabase, similarity_percentage: float = 69):
         self._classifier: Union[NaiveBayesClassifier, None] = None
         self._set: Dict[str, int] = {}
         self._pass_percentage: float = max(min(similarity_percentage, 100), 0)

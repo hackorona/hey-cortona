@@ -96,9 +96,7 @@ def ask_qna(users_database: UserDatabase, questions_database: QuestionsDatabase,
     question: Question = Question(message)
     qna_subsystem.ask_question(user, question)
 
-    response: Dict = {
-        "actions": [{"say": "Oops. Looks like I don't have an answer. I'll be right back with an answer."}]}
-    return jsonify(response)
+    return Response(status=200)
 
 
 @app.route('/bot/answerQuestion', methods=['POST'])

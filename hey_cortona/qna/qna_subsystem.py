@@ -58,6 +58,8 @@ class QNASubsystem:
             self._classifier.add_question(question)
             category: QuestionsCategory = self._questions_database.find_questions_category(question)
             if len(category.answers) < 1:
+                self._outbound_sender.send_from_bot(asking_user,
+                                                    "Oops. Looks like I don't have an answer. I'll be right back with an answer.")
                 msg: str = f"{asking_user.name} asked:\n{question.question}\n(if you don't have an answer, respond '!')"
                 users: List[User] = self._users_database.get_all_users()
 
