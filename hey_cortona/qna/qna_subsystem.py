@@ -17,15 +17,24 @@ class QNASubsystem:
     def __init__(self, users_database: UserDatabase, questions_database: QuestionsDatabase, outbound_sender: BotSender,
                  number_of_users_to_ask: int):
         self._users_database: UserDatabase = users_database
+        self._questions_database: QuestionsDatabase = questions_database
         self._outbound_sender: BotSender = outbound_sender
         self._number_of_users_to_ask = number_of_users_to_ask
-        self._classifier = Classifier(questions_database)
+        self._classifier = Classifier(self._questions_database)
 
         self._questions_queue: Queue = Queue()
         self._question_thread_active: bool = False
         self._questions_thread: Thread = Thread(target=self._send_questions_loop)
 
+        self._train_thread_active: bool = False
+        self._train_thread: Thread = Thread(target=self._train_loop)
+
     def _send_questions_loop(self):
+        while self._train_thread_active:
+            self._questions_database.watch_for_change().next()
+            self._classifier.train()
+
+    def _train_loop(self):
         while self._question_thread_active:
             self._questions_queue.get()()
 
@@ -35,7 +44,9 @@ class QNASubsystem:
 
     def stop(self):
         self._question_thread_active = False
+        self._train_thread_active = False
         self._questions_thread.join()
+        self._train_thread.join()
 
     def ask_question(self, asking_user: User, question: Question):
         def ask():

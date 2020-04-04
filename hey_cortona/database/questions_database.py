@@ -47,3 +47,6 @@ class QuestionsDatabase(Database):
 
     def delete_question_category(self, questions: QuestionsCategory):
         self._collection.delete_one({"qid": questions.qid})
+
+    def watch_for_change(self):
+        return self._collection.watch()
