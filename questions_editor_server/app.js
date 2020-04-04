@@ -6,13 +6,16 @@ const bodyParse = require("body-parser");
 const cors = require("cors");
 const questionsRoute = require("./routes/questionsRoutes");
 
+const PORT = 4000;
+
 app.use(cors());
 
 app.use(bodyParse.json());
 app.use("/questions", questionsRoute);
 
+// Connect to the server
 mongoose.connect(process.env.DB_CONNECTION, { useNewUrlParser: true }, () =>
   console.log("connected to DB")
 );
 
-app.listen(4000);
+app.listen(PORT);

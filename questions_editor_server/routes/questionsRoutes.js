@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const questions = require("../models/questions");
 
+// Get all the Questions from the server
 router.get("/", async (req, res) => {
   try {
     const questions_arr = await questions.find();
@@ -11,6 +12,7 @@ router.get("/", async (req, res) => {
   }
 });
 
+// Delete a specific Questions from the server
 router.delete("/", async (req, res) => {
   try {
     const removedQuestions = await questions.remove({ qid: req.body.qid });
@@ -20,6 +22,7 @@ router.delete("/", async (req, res) => {
   }
 });
 
+// Add new Questions
 router.post("/", async (req, res) => {
   const questions_obj = new questions(req.body);
   try {
@@ -31,6 +34,7 @@ router.post("/", async (req, res) => {
   }
 });
 
+// Update an existing Questions
 router.patch("/", async (req, res) => {
   try {
     const questionUpdate = await questions.updateOne(
@@ -42,4 +46,6 @@ router.patch("/", async (req, res) => {
     res.json(err);
   }
 });
+
+// The routes
 module.exports = router;

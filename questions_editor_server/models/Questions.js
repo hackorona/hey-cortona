@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 
+// The object we should thake from the server
 let questionsSchema = new mongoose.Schema(
   {
     qid: {
