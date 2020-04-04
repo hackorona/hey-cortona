@@ -2,7 +2,7 @@ import json
 import random
 from queue import Queue
 from threading import Thread
-from typing import List, Callable
+from typing import List
 
 from bot_interaction.outbound_communication import BotSender
 from database.questions_database import QuestionsDatabase
@@ -11,44 +11,15 @@ from model.question import Question
 from model.user import User
 from nlp.classifier import Classifier
 
-actions = {
-    "actions": [
-        {
-            "say": "Looks like another user has a question."
-        },
-        {
-            "say": "{name} asked:\n{question}"
-        },
-        {
-            "collect": {
-                "name": "answer_question",
-                "questions": [
-                    {
-                        "question": "What is your answer",
-                        "name": "answer"
-                    }
-                ],
-                "on_complete": {
-                    "redirect": {
-                        "method": "POST",
-                        "uri": "http://51.141.173.171/bot/answerQuestion/{qid}"
-                    }
-                }
-            }
-        },
-        {
-            "say": "Thanks for helping us :)"
-        }
-    ]
-}
-
 
 class QNASubsystem:
 
-    def __init__(self, database: UserDatabase, outbound_sender: BotSender, number_of_users_to_ask: int):
-        self._database: UserDatabase = database
+    def __init__(self, users_database: UserDatabase, questions_database: QuestionsDatabase, outbound_sender: BotSender,
+                 number_of_users_to_ask: int):
+        self._users_database: UserDatabase = users_database
         self._outbound_sender: BotSender = outbound_sender
         self._number_of_users_to_ask = number_of_users_to_ask
+        self._classifier = Classifier(questions_database)
 
         self._questions_queue: Queue = Queue()
         self._question_thread_active: bool = False
@@ -69,7 +40,7 @@ class QNASubsystem:
     def ask_question(self, asking_user: User, question: Question):
         def ask():
             msg: str = f"{asking_user.name} asked:\n{question.question}(if you don't have an answer, respond '!')"
-            users: List[User] = [User.from_mongo(user) for user in self._database.get_all_elements()]
+            users: List[User] = self._users_database.get_all_users()
 
             users = [user for user in users if "yes" in user.help_us.lower()]
 
@@ -81,10 +52,11 @@ class QNASubsystem:
                 user = random.choice(users)
                 selected_users.append(user)
                 users.remove(user)
-                self._database.updateUser(user, {"answer_qid": question.qid})
-
+                self._users_database.update_user(user, {"answer_qid": question.qid})
 
             for user in selected_users:
                 self._outbound_sender.send_from_bot(user, msg)
+
+            self._classifier.add_question(question)
 
         self._questions_queue.put(ask)

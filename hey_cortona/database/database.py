@@ -12,7 +12,7 @@ class Database:
         self._db = self._cluster["heyCortona"]
         self._collection = self._db[collection_name]
 
-    def get_all_elements(self):
+    def _get_all_elements(self):
         mongo_elements: List[Dict] = self._collection.find({})
         return mongo_elements
 

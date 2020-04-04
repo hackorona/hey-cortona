@@ -8,9 +8,9 @@ class ImmediateSubsystem:
         self._database: UserDatabase = database
         self._outbound_sender: BotSender = outbound_sender
 
-    def broadcast(self, sender: User, message: str):
+    def broadcast(self, message: str):
         for recipient in self._database.get_all_users():
-            self._outbound_sender.send(sender, recipient, self.message_formatter(message))
+            self._outbound_sender.send_from_bot(recipient, self.message_formatter(message))
 
     def message_formatter(self, message: str):
         return "*System message:*" + "\n" + message[1::]

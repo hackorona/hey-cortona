@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from typing import Dict
 
+from model.questions_category import QuestionsCategory
+
 
 @dataclass
 class User:
@@ -32,4 +34,5 @@ class User:
         return cls.from_user_id(user_id, name, city, help_us)
 
     def __str__(self):
-        return f"{self.name}:{self.phone_number} - {self.city} - help-us: {self.help_us} - admin: {self.admin} - qid: {self.answer_qid}"
+        return f"{self.name}:{self.phone_number}" \
+               f" - {self.city} - help-us: {self.help_us} - admin: {self.admin} - qid: {self.answer_qid}"

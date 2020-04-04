@@ -1,9 +1,8 @@
-from typing import Dict
+from typing import Dict, List
 
 from database.database import Database
 from model.question import Question
-from model.questions import Questions
-from model.user import User
+from model.questions_category import QuestionsCategory
 
 
 class QuestionsDatabase(Database):
@@ -11,52 +10,40 @@ class QuestionsDatabase(Database):
     def __init__(self, uri: str):
         super().__init__(uri, "questions")
 
-    # def add_question(self, question: Question):
-    #     result = self._collection.find_one({"qid": question.qid})
-    #     print (f'\n\nresult : {result} , qid : {question.qid} , origin_que : {question}\n\n')
-    #     if result is not None:
-    #         result = Questions.from_mongo(result)
-    #         print (f'\n\nque from mongo : {result}\n\n')
-    #         result.questions.append(question.question)
-    #         self._collection.replace_one({"qid": question.qid}, result.questions)
-    #
-    #     return result
+    def add_question(self, question: Question):
+        mongo_questions_category: Dict = self._collection.find_one({"qid": question.qid})
 
-    def add_question(self, question: str, qid: str):
-        result = self._collection.find_one({"qid": qid})
-        print(f'\n\nresult : {result} , qid : {qid} , origin_que : {question}\n\n')
-        if result is not None:
-            result = Questions.from_mongo(result)
-            result.questions.append(question)
-            print(f'\n\nque from mongo : {result}\n\n')
-            self._collection.update_one({"qid": qid}, {"$set": {"questions": result.questions}})
-
-        return result
+        if mongo_questions_category is not None:
+            questions_category = QuestionsCategory.from_mongo(mongo_questions_category)
+            questions_category.questions.append(question)
+            self._collection.update_one({"qid": questions_category.qid},
+                                        {"$set": {"questions": questions_category.questions}})
+        else:
+            # if category does not exists add new one
+            self.add_question_category(question.question)
 
     def add_answer(self, qid: str, answer: str):
+
         mongo_question_category: Dict = self._collection.find_one({"qid": qid})
-        mongo_question_category["answers"][answer] = None
+        mongo_question_category["answers"][answer] = None  # add answer
         self._collection.update_one({"qid": qid}, {"$set": {"answers": mongo_question_category["answers"]}})
 
-    def find_question(self, question: Question):
-        # TODO fix this crap code !!!!!!!!!!!
-        result = self._collection.find_one({"qid": question.qid})
+    def find_questions_category(self, question: Question):
+        mongo_questions_category: Dict = self._collection.find_one({"qid": question.qid})
+        if mongo_questions_category is not None:
+            return QuestionsCategory.from_mongo(mongo_questions_category)
 
-        if result is not None:
-            return Question.from_mongo(result)
+        return mongo_questions_category
 
-        return result
-
-    def get_all_questions(self):
-        questions = super().get_all_elements()
-        questions_arr = []
-        for question in questions:
-            questions_arr.append(Questions.from_mongo(question))
-        return questions_arr
+    def get_all_questions_categories(self):
+        mongo_questions_categories: List[Dict] = super()._get_all_elements()
+        questions: List[Question] = [QuestionsCategory.from_mongo(question_category) for question_category in
+                                     mongo_questions_categories]
+        return questions
 
     def add_question_category(self, qid: str):
-        result = Questions(qid, [qid], {})
-        self._collection.insert_one(result.to_mongo())
+        question_category: QuestionsCategory = QuestionsCategory(qid, [Question(qid, qid)], {})
+        self._collection.insert_one(question_category.to_mongo())
 
-    def delete_question_category(self, questions: Questions):
+    def delete_question_category(self, questions: QuestionsCategory):
         self._collection.delete_one({"qid": questions.qid})

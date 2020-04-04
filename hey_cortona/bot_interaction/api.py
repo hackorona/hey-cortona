@@ -1,10 +1,10 @@
 import json
-import os
-from typing import Dict, List
+from typing import Dict
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Response
 
-from bot_interaction.outbound_communication import OutboundSender, User, BotSender
+from bot_interaction.outbound_communication import User, BotSender
+from config.app_config import AppConfig
 from database.questions_database import QuestionsDatabase
 from database.user_database import UserDatabase
 from immediate.immediate import ImmediateSubsystem
@@ -14,28 +14,28 @@ from qna.qna_subsystem import QNASubsystem
 
 app = Flask(__name__)
 
-ACCOUNT_SID = os.getenv('TWILIO_ACCOUNT_SID')
-AUTH_TOKEN = os.getenv('TWILIO_AUTH_TOKEN')
-MONGO_URI = os.getenv('MONGO_URI')
 
-bot: User = User("+14155238886", "CORONA_BOT")
+class SystemContainer:
+    app_config: AppConfig
+    bot: User
+    sender: BotSender
+    users_database: UserDatabase
+    questions_database: QuestionsDatabase
+    immediate_subsystem: ImmediateSubsystem
+    qna_subsystem: QNASubsystem
 
-sender: BotSender = BotSender(ACCOUNT_SID, AUTH_TOKEN, bot)
-users_database: UserDatabase = UserDatabase(MONGO_URI)
-questions_database: QuestionsDatabase = QuestionsDatabase(MONGO_URI)
-immediate_subsystem: ImmediateSubsystem = ImmediateSubsystem(users_database, sender)
-qna_subsystem: QNASubsystem = QNASubsystem(users_database, sender, 3)
-qna_subsystem.start()
-
-users: List[User] = []
+    def __new__(cls):
+        return lambda func: func(cls.users_database, cls.questions_database, cls.immediate_subsystem, cls.qna_subsystem)
 
 
 @app.route('/bot/checkUser', methods=['POST'])
-def check_user():
+@SystemContainer()
+def check_user(users_database: UserDatabase, questions_database: QuestionsDatabase,
+               immediate_subsystem: ImmediateSubsystem, qna_subsystem: QNASubsystem):
     user_id = request.get_json().get("user_id")
     user: User = User.from_user_id(user_id)
 
-    db_user: User = users_database.findUser(user)
+    db_user: User = users_database.find_user(user)
     resp: Dict[str, str] = {}
     if db_user is None:
         resp["next_task"] = "register"
@@ -44,57 +44,76 @@ def check_user():
     else:
         resp["next_task"] = "proceed"
 
-
     return json.dumps(resp)
 
 
 @app.route('/bot/registerUserCompleted', methods=['POST'])
-def register_user_completed():
+@SystemContainer()
+def register_user_completed(users_database: UserDatabase, questions_database: QuestionsDatabase,
+                            immediate_subsystem: ImmediateSubsystem, qna_subsystem: QNASubsystem):
     memory: Dict = json.loads(request.values.get("Memory"))
     answers: Dict = memory.get("twilio").get("collected_data").get("register").get("answers")
     number = request.values.get("UserIdentifier")
     new_user = User.from_answers(number, answers)
-    users_database.addUser(new_user)
+    users_database.add_user(new_user)
 
     response: Dict = {"actions": [{"say": "You have registered successfully!"}]}
     return jsonify(response)
 
 
 @app.route('/bot/immediateMessage', methods=['POST'])
-def send_immediate_message():
+@SystemContainer()
+def send_immediate_message(users_database: UserDatabase, questions_database: QuestionsDatabase,
+                           immediate_subsystem: ImmediateSubsystem, qna_subsystem: QNASubsystem):
     message: str = request.get_json().get("CurrentInput")
     sender_phone_number: str = request.get_json().get("UserIdentifier")
     user: User = User.from_user_id(sender_phone_number)
-    sender_user: User = users_database.findUser(user)
+    sender_user: User = users_database.find_user(user)
     if sender_user.admin:
-        immediate_subsystem.broadcast(bot, message)
-    return ""
+        immediate_subsystem.broadcast(message)
+    else:
+        return {"actions": [{"redirect": "task://fallback"}]}
+    return Response(status=200)
+
 
 @app.route('/bot/qna', methods=['POST'])
-def ask_qna():
+@SystemContainer()
+def ask_qna(users_database: UserDatabase, questions_database: QuestionsDatabase,
+            immediate_subsystem: ImmediateSubsystem, qna_subsystem: QNASubsystem):
     classifier: Classifier = Classifier(questions_database)
     user_id = request.get_json().get("UserIdentifier")
     user: User = User.from_user_id(user_id)
-    user: User = users_database.findUser(user)
+    user: User = users_database.find_user(user)
     message: str = request.get_json().get("CurrentInput")
     question: Question = Question(message)
     classifier.add_question(question)
-    print("Finished nlp")
     qna_subsystem.ask_question(user, question)
 
     response: Dict = {
         "actions": [{"say": "Oops. Looks like I don't have an answer. I'll be right back with an answer."}]}
     return jsonify(response)
 
+
 @app.route('/bot/answerQuestion', methods=['POST'])
-def answerQuestion():
+@SystemContainer()
+def answer_question(users_database: UserDatabase, questions_database: QuestionsDatabase,
+                    immediate_subsystem: ImmediateSubsystem, qna_subsystem: QNASubsystem):
     user_answer: str = request.get_json().get("answer")
     user_id: str = request.get_json().get("user_id")
     user: User = User.from_user_id(user_id)
-    user: User = users_database.findUser(user)
+    user: User = users_database.find_user(user)
     questions_database.add_answer(user.answer_qid, user_answer)
-    users_database.updateUser(user, {"answer_qid": None})
+    users_database.update_user(user, {"answer_qid": None})
+    return Response(status=200)
 
 
-def start_server():
+def start_server(app_config: AppConfig):
+    SystemContainer.app_config = app_config
+    SystemContainer.bot = User(app_config.BOT_PHONE_NUMBER, "BOT")
+    SystemContainer.sender = BotSender(app_config.ACCOUNT_SID, app_config.AUTH_TOKEN, SystemContainer.bot)
+    SystemContainer.users_database = UserDatabase(app_config.MONGO_URI)
+    SystemContainer.questions_database = QuestionsDatabase(app_config.MONGO_URI)
+    SystemContainer.immediate_subsystem = ImmediateSubsystem(SystemContainer.users_database, SystemContainer.sender)
+    SystemContainer.qna_subsystem = QNASubsystem(SystemContainer.users_database, SystemContainer.questions_database,
+                                                 SystemContainer.sender, app_config.number_of_people_to_ask)
     app.run(host="0.0.0.0", port=80)
