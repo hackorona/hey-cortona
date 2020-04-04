@@ -18,7 +18,7 @@ class App extends Component<IProps, IState> {
   constructor(props: Readonly<IProps>) {
     super(props);
     this.state = {
-      qid: ""
+      qid: "",
     };
     questionsStore.getInitialData();
   }
@@ -48,6 +48,14 @@ class App extends Component<IProps, IState> {
             </div>
           </Form.Field>
         </Form>
+        <Button
+          className="delete-marked"
+          onClick={() => {
+            questionsStore.deleteMarked();
+          }}
+        >
+          Delete Marked
+        </Button>
         <Grid centered className="cards">
           {questionsStore.questions.map((item: Questions) => {
             return <QuestionCard key={item.qid} qid={item.qid}></QuestionCard>;
