@@ -10,7 +10,8 @@ class ImmediateSubsystem:
 
     def broadcast(self, message: str):
         for recipient in self._database.get_all_users():
-            self._outbound_sender.send_from_bot(recipient, self.message_formatter(message))
-
-    def message_formatter(self, message: str):
-        return "*System message:*" + "\n"
+            self._outbound_sender.send_from_bot(recipient, ImmediateSubsystem.message_formatter(message))
+    
+    @staticmethod
+    def message_formatter(message: str):
+        return f"*System message:*\n{message}"
