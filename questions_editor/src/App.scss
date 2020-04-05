@@ -1,0 +1,58 @@
+.my-title {
+  align-items: center;
+  text-align: center;
+  background-color: #369cf7;
+  min-height: 100vh;
+  font-family: "Comic Sans MS", cursive, sans-serif;
+  .my-header {
+    padding-top: 15px !important;
+    padding-bottom: 15px !important;
+    background-color: #0e6ab9;
+    color: white;
+    max-width: 50vw;
+    position: relative;
+    left: 25vw;
+    font-weight: bolder;
+  }
+  .cards {
+    .card {
+      margin: 10px;
+      width: 30vw;
+      padding: 1.5vw;
+    }
+    .checked {
+      background-color: yellow !important;
+    }
+  }
+  .err-msg {
+    font-size: 2rem;
+    background-color: red !important;
+    color: white;
+    &.hidden {
+      opacity: 0;
+    }
+  }
+  .my-form {
+    align-items: center;
+    margin-top: 0.3rem;
+    margin-bottom: 0.3rem;
+    background-color: #369cf7;
+    .button {
+      font-size: 2rem;
+      background-color: #b3d6f5;
+      color: black;
+    }
+    .input {
+      font-size: 2rem;
+      max-width: 60vw;
+    }
+  }
+  .delete-marked {
+    align-items: center;
+    margin-top: 1.7rem;
+    margin-bottom: 1.7rem;
+    font-size: 2rem;
+    background-color: #b3d6f5 !important;
+    color: black !important;
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "short_name": "Cortona Editor",
+  "name": "Cortona Editor by Dror Tal",
+  "start_url": ".",
+  "display": "standalone"
+}
