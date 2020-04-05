@@ -54,15 +54,16 @@ class QNASubsystem:
         self._train_thread.join()
 
     def ask_question(self, asking_user: User, question: Question, number_of_people_to_ask: int = None,
-                     exclude_users: List[User] = []):
+                     exclude_users: List[User] = [], continous_question: bool = False):
         number_of_people_to_ask = number_of_people_to_ask or self._number_of_users_to_ask
 
         def ask():
             self._classifier.add_question(question)
             category: QuestionsCategory = self._questions_database.find_questions_category(question)
             if len(category.answers) < 1:
-                self._outbound_sender.send_from_bot(asking_user,
-                                                    "Oops. Looks like I don't have an answer. I'll be right back with an answer.")
+                if not continous_question:
+                    self._outbound_sender.send_from_bot(asking_user,
+                                                        "Oops. Looks like I don't have an answer. I'll be right back with an answer.")
                 msg: str = f"{asking_user.name} asked:\n{question.question}\n(if you don't have an answer, respond '!')"
                 users: List[User] = self._users_database.get_all_users()
 
@@ -101,7 +102,7 @@ class QNASubsystem:
 
     def decline_question(self, declining_user: User):
         asking_user: User = self._users_database.find_user(User.from_user_id(declining_user.asking_user_id))
-        self.ask_question(asking_user, Question(declining_user.asked_question), 1, [asking_user])
+        self.ask_question(asking_user, Question(declining_user.asked_question), 1, [declining_user])
         self._users_database.update_user(declining_user, {"answer_qid": None,
                                                           "asking_user_id": None,
                                                           "asked_question": None})
