@@ -102,7 +102,7 @@ class QNASubsystem:
 
     def decline_question(self, declining_user: User):
         asking_user: User = self._users_database.find_user(User.from_user_id(declining_user.asking_user_id))
-        self.ask_question(asking_user, Question(declining_user.asked_question), 1, [declining_user])
+        self.ask_question(asking_user, Question(declining_user.asked_question), 1, [declining_user], True)
         self._users_database.update_user(declining_user, {"answer_qid": None,
                                                           "asking_user_id": None,
                                                           "asked_question": None})
