@@ -29,7 +29,7 @@ class User:
 
     @classmethod
     def from_answers(cls, user_id: str, answers: Dict):
-        city: str = answers.get("city").get("answer")
+        city: str = Null#answers.get("city").get("answer")
         name: str = answers.get("name").get("answer")
         help_us: str = answers.get("help_us").get("answer")
         return cls.from_user_id(user_id, name, city, help_us)
